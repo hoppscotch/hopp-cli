@@ -17,11 +17,13 @@ func main() {
 		cli.StringFlag{
 			Name:     "url",
 			Value:    "https://reqres.in/api/users",
+			Usage:    "The URL/Endpoint you want to check",
 			Required: true,
 		},
 		cli.StringFlag{
 			Name:  "token",
 			Value: "Bearer Token",
+			Usage: "Send the Request with Bearer Token",
 		},
 	}
 	app.Commands = []cli.Command{{
