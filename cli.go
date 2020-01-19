@@ -1,13 +1,9 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/TylerBrock/colorjson"
+	mets "github.com/athul/pwcli/methods"
 	"github.com/urfave/cli"
-	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 )
 
@@ -23,27 +19,21 @@ func main() {
 			Value:    "https://reqres.in/api/users",
 			Required: true,
 		},
+		cli.StringFlag{
+			Name:  "token",
+			Value: "Bearer Token",
+		},
 	}
 	app.Commands = []cli.Command{{
-		Name:  "gt",
+		Name:  "get",
 		Usage: "Send a GET request",
 		Flags: myFlags,
 		Action: func(c *cli.Context) error {
-			resp, err := http.Get(c.String("url"))
-			if err != nil {
-				log.Fatal(err)
+			if c.String("token") != "" {
+				mets.Getwtoken(c)
+			} else {
+				mets.Getreq(c)
 			}
-			defer resp.Body.Close()
-			body, err := ioutil.ReadAll(resp.Body)
-			str := string(body)
-			var obj map[string]interface{}
-			json.Unmarshal([]byte(str), &obj)
-			f := colorjson.NewFormatter()
-			f.Indent = 6
-			s, _ := f.Marshal(obj)
-			//log.Println()
-			fmt.Print(resp)
-			fmt.Printf("\n\n %s", string(s))
 			return nil
 		},
 	},
