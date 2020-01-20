@@ -26,19 +26,42 @@ func main() {
 			Usage: "Send the Request with Bearer Token",
 		},
 	}
-	app.Commands = []cli.Command{{
-		Name:  "get",
-		Usage: "Send a GET request",
-		Flags: myFlags,
-		Action: func(c *cli.Context) error {
-			if c.String("token") != "" {
-				mets.Getwtoken(c)
-			} else {
-				mets.Getreq(c)
-			}
-			return nil
+	bauthFlags := []cli.Flag{
+		cli.StringFlag{
+			Name:     "u",
+			Value:    "Username",
+			Usage:    "Add the Username",
+			Required: true,
 		},
-	},
+		cli.StringFlag{
+			Name:     "p",
+			Value:    "Password",
+			Usage:    "Add the Password",
+			Required: true,
+		},
+	}
+	app.Commands = []cli.Command{
+		{
+			Name:  "get",
+			Usage: "Send a GET request",
+			Flags: myFlags,
+			Action: func(c *cli.Context) error {
+				if c.String("token") != "" {
+					mets.Getwtoken(c)
+				} else {
+					mets.Getreq(c)
+				}
+				return nil
+			},
+		},
+		{
+			Name:  "bauth",
+			Usage: "Send Request with Basic Auth",
+			Flags: bauthFlags,
+			Action: func(c *cli.Context) error {
+				return nil
+			},
+		},
 	}
 	err := app.Run(os.Args)
 	if err != nil {
