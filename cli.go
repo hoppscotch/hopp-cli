@@ -28,6 +28,12 @@ func main() {
 	}
 	bauthFlags := []cli.Flag{
 		cli.StringFlag{
+			Name:     "url",
+			Value:    "https://reqres.in/api/users",
+			Usage:    "The URL/Endpoint you want to check",
+			Required: true,
+		},
+		cli.StringFlag{
 			Name:     "u",
 			Value:    "Username",
 			Usage:    "Add the Username",
@@ -56,9 +62,10 @@ func main() {
 		},
 		{
 			Name:  "bauth",
-			Usage: "Send Request with Basic Auth",
+			Usage: "Send GET Request with Basic Auth(Don't Use get command with this)",
 			Flags: bauthFlags,
 			Action: func(c *cli.Context) error {
+				mets.Getbasic(c)
 				return nil
 			},
 		},

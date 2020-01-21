@@ -1,6 +1,7 @@
 package methods
 
 import (
+	"encoding/base64"
 	"fmt"
 	"log"
 	"net/http"
@@ -29,7 +30,7 @@ func Getreq(c *cli.Context) error {
 	return nil
 }
 
-//Getwtoken send a get request with the Token for Auth
+//Getwtoken send a get request with the Token for Authorization Header
 func Getwtoken(c *cli.Context) error {
 	var url = c.String("url")
 	var bearer = "Bearer " + c.String("token")
@@ -49,23 +50,28 @@ func Getwtoken(c *cli.Context) error {
 	return nil
 }
 
-//Getbasic send a request with Baic Auth
+//Getbasic helps you send a request with Basic Auth as Authorization Method
 func Getbasic(c *cli.Context) error {
+	un := c.String("u")
+	pw := c.String("p")
+	url := c.String("url")
+	req, err := http.NewRequest("GET", url, nil)
+	req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println("Error on response.\n[ERRO] -", err)
+	}
+	s := Formatresp(resp)
+	if s != "" {
+		fmt.Printf("\n\n %s", s)
+	} else {
+		fmt.Print(resp)
+	}
+
 	return nil
 }
-
-// Dummy Code
-/* func basicAuth() string {
-    var username string = "foo"
-    var passwd string = "bar"
-    client := &http.Client{}
-    req, err := http.NewRequest("GET", "mydomain.com", nil)
-    req.SetBasicAuth(username, passwd)
-    resp, err := client.Do(req)
-    if err != nil{
-        log.Fatal(err)
-    }
-    bodyText, err := ioutil.ReadAll(resp.Body)
-    s := string(bodyText)
-    return s
-} */
+func basicAuth(username, password string) string {
+	auth := username + ":" + password
+	return base64.StdEncoding.EncodeToString([]byte(auth))
+}
