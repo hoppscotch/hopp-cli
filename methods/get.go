@@ -12,7 +12,6 @@ import (
 //Getreq sends a simple GET request to the url
 func Getreq(c *cli.Context) error {
 	var url = c.String("url")
-
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return err
@@ -44,9 +43,11 @@ func Getwtoken(c *cli.Context) error {
 	}
 	defer resp.Body.Close()
 	s := Formatresp(resp)
-	fmt.Print(resp)
-	fmt.Printf("\n\n %s", s)
-
+	if s != "" {
+		fmt.Printf("%s", s)
+	} else {
+		fmt.Print(resp)
+	}
 	return nil
 }
 
@@ -62,9 +63,10 @@ func Getbasic(c *cli.Context) error {
 	if err != nil {
 		log.Println("Error on response.\n[ERRO] -", err)
 	}
+	defer resp.Body.Close()
 	s := Formatresp(resp)
 	if s != "" {
-		fmt.Printf("\n\n %s", s)
+		fmt.Printf("%s", s)
 	} else {
 		fmt.Print(resp)
 	}

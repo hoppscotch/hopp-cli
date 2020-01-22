@@ -25,14 +25,6 @@ func main() {
 			Value: "Bearer Token",
 			Usage: "Send the Request with Bearer Token",
 		},
-	}
-	bauthFlags := []cli.Flag{
-		cli.StringFlag{
-			Name:     "url",
-			Value:    "https://reqres.in/api/users",
-			Usage:    "The URL/Endpoint you want to check",
-			Required: true,
-		},
 		cli.StringFlag{
 			Name:     "u",
 			Value:    "Username",
@@ -46,26 +38,20 @@ func main() {
 			Required: true,
 		},
 	}
+
 	app.Commands = []cli.Command{
 		{
 			Name:  "get",
 			Usage: "Send a GET request",
 			Flags: myFlags,
 			Action: func(c *cli.Context) error {
-				if c.String("token") != "" {
+				if c.String("u") != "" && c.String("p") != "" {
+					mets.Getbasic(c)
+				} else if c.String("token") != "" {
 					mets.Getwtoken(c)
 				} else {
 					mets.Getreq(c)
 				}
-				return nil
-			},
-		},
-		{
-			Name:  "bauth",
-			Usage: "Send GET Request with Basic Auth(Don't Use get command with this)",
-			Flags: bauthFlags,
-			Action: func(c *cli.Context) error {
-				mets.Getbasic(c)
 				return nil
 			},
 		},
