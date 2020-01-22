@@ -9,8 +9,8 @@ import (
 	"github.com/urfave/cli"
 )
 
-//Getreq sends a simple GET request to the url
-func Getreq(c *cli.Context) error {
+//Basicreq sends a simple GET request to the url
+func Basicreq(c *cli.Context) error {
 	var url = c.String("url")
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -29,12 +29,12 @@ func Getreq(c *cli.Context) error {
 	return nil
 }
 
-//Getwtoken send a get request with the Token for Authorization Header
-func Getwtoken(c *cli.Context) error {
+//Authwtoken send a get request with the Token for Authorization Header
+func Authwtoken(c *cli.Context, method string) error {
 	var url = c.String("url")
 	var bearer = "Bearer " + c.String("token")
-	req, err := http.NewRequest("GET", url, nil)
-
+	req, err := http.NewRequest(method, url, nil)
+	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", bearer)
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -51,12 +51,12 @@ func Getwtoken(c *cli.Context) error {
 	return nil
 }
 
-//Getbasic helps you send a request with Basic Auth as Authorization Method
-func Getbasic(c *cli.Context) error {
+//Authbasic helps you send a request with Basic Auth as Authorization Method
+func Authbasic(c *cli.Context, method string) error {
 	un := c.String("u")
 	pw := c.String("p")
 	url := c.String("url")
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(method, url, nil)
 	req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	client := &http.Client{}
 	resp, err := client.Do(req)
