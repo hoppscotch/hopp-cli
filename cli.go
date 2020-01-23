@@ -55,6 +55,7 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:  "ctype",
+			Value: "application/json",
 			Usage: "Change the Content Type",
 		},
 		cli.StringFlag{
@@ -69,13 +70,11 @@ func main() {
 			Usage: "Send a GET request",
 			Flags: getFlags,
 			Action: func(c *cli.Context) error {
-				tokavail := c.String("token")
-				uvail := c.String("u")
 				switch {
-				case tokavail != "":
+				case c.String("token") != "":
 					mets.Authwtoken(c, "GET")
 					break
-				case uvail != "":
+				case c.String("u") != "":
 					mets.Authbasic(c, "GET")
 				default:
 					mets.Basicreq(c)
@@ -85,10 +84,14 @@ func main() {
 			},
 		},
 		{
-			Name: "post",
+			Name:  "post",
 			Usage: "Send a POST Request",
-
-		}
+			Flags: postFlags,
+			Action: func(c *cli.Context) error {
+				mets.Postbasic(c)
+				return nil
+			},
+		},
 	}
 	err := app.Run(os.Args)
 	if err != nil {
