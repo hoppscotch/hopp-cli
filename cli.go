@@ -70,7 +70,7 @@ func main() {
 			Usage: "Send a GET request",
 			Flags: getFlags,
 			Action: func(c *cli.Context) error {
-				mets.Basicreq(c)
+				mets.Getbasic(c)
 				return nil
 			},
 		},

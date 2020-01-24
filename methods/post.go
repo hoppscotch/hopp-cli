@@ -24,16 +24,12 @@ func Postbasic(c *cli.Context) {
 		pw := c.String("p")
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	}
-	fmt.Print(req.Header)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		panic(err)
 	}
 	defer resp.Body.Close()
-	s := Formatresp(resp)
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
-	//body, _ := ioutil.ReadAll(resp.Body)
+	s := formatresp(resp)
 	fmt.Println("response Body:", s)
 }

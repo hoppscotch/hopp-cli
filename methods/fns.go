@@ -12,7 +12,7 @@ import (
 )
 
 // Formatresp formats the Response with Indents and Colors
-func Formatresp(resp *http.Response) string {
+func formatresp(resp *http.Response) string {
 	body, err := ioutil.ReadAll(resp.Body)
 	str := string(body)
 	var obj map[string]interface{}
