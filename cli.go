@@ -70,16 +70,7 @@ func main() {
 			Usage: "Send a GET request",
 			Flags: getFlags,
 			Action: func(c *cli.Context) error {
-				switch {
-				case c.String("token") != "":
-					mets.Authwtoken(c, "GET")
-					break
-				case c.String("u") != "":
-					mets.Authbasic(c, "GET")
-				default:
-					mets.Basicreq(c)
-				}
-
+				mets.Basicreq(c)
 				return nil
 			},
 		},

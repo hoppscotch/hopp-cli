@@ -1,6 +1,7 @@
 package methods
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -24,4 +25,8 @@ func Formatresp(resp *http.Response) string {
 		log.Println("Error on response.\n[ERRO] -", err)
 	}
 	return retbody
+}
+func basicAuth(username, password string) string {
+	auth := username + ":" + password
+	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
