@@ -1,10 +1,11 @@
 package main
 
 import (
-	mets "github.com/athul/pwcli/methods"
-	"github.com/urfave/cli"
 	"log"
 	"os"
+
+	mets "github.com/athul/pwcli/methods"
+	"github.com/urfave/cli"
 )
 
 func main() {
@@ -13,7 +14,7 @@ func main() {
 	app.Usage = "Test API endpoints without the hassle"
 	app.Description = "Made with <3 by Postwoman Team"
 
-	myFlags := []cli.Flag{
+	getFlags := []cli.Flag{
 		cli.StringFlag{
 			Name:     "url",
 			Value:    "https://reqres.in/api/users",
@@ -22,20 +23,44 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:  "token",
-			Value: "Bearer Token",
 			Usage: "Send the Request with Bearer Token",
 		},
 		cli.StringFlag{
-			Name:     "u",
-			Value:    "Username",
-			Usage:    "Add the Username",
+			Name:  "u",
+			Usage: "Add the Username",
+		},
+		cli.StringFlag{
+			Name:  "p",
+			Usage: "Add the Password",
+		},
+	}
+	postFlags := []cli.Flag{
+		cli.StringFlag{
+			Name:     "url",
+			Value:    "https://reqres.in/api/users",
+			Usage:    "The URL/Endpoint you want to check",
 			Required: true,
 		},
 		cli.StringFlag{
-			Name:     "p",
-			Value:    "Password",
-			Usage:    "Add the Password",
-			Required: true,
+			Name:  "token",
+			Usage: "Send the Request with Bearer Token",
+		},
+		cli.StringFlag{
+			Name:  "u",
+			Usage: "Add the Username",
+		},
+		cli.StringFlag{
+			Name:  "p",
+			Usage: "Add the Password",
+		},
+		cli.StringFlag{
+			Name:  "ctype",
+			Value: "application/json",
+			Usage: "Change the Content Type",
+		},
+		cli.StringFlag{
+			Name:  "body",
+			Usage: "Body of the Post Request",
 		},
 	}
 
@@ -43,15 +68,18 @@ func main() {
 		{
 			Name:  "get",
 			Usage: "Send a GET request",
-			Flags: myFlags,
+			Flags: getFlags,
 			Action: func(c *cli.Context) error {
-				if c.String("u") != "" && c.String("p") != "" {
-					mets.Getbasic(c)
-				} else if c.String("token") != "" {
-					mets.Getwtoken(c)
-				} else {
-					mets.Getreq(c)
-				}
+				mets.Getbasic(c)
+				return nil
+			},
+		},
+		{
+			Name:  "post",
+			Usage: "Send a POST Request",
+			Flags: postFlags,
+			Action: func(c *cli.Context) error {
+				mets.Postbasic(c)
 				return nil
 			},
 		},
