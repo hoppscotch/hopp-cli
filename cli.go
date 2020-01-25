@@ -92,6 +92,15 @@ func main() {
 				return nil
 			},
 		},
+		{
+			Name:  "patch",
+			Usage: "Send a PATCH Request",
+			Flags: postFlags,
+			Action: func(c *cli.Context) error {
+				mets.Patchbasic(c)
+				return nil
+			},
+		},
 	}
 	err := app.Run(os.Args)
 	if err != nil {
