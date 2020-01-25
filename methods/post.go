@@ -31,5 +31,5 @@ func Postbasic(c *cli.Context) {
 	}
 	defer resp.Body.Close()
 	s := formatresp(resp)
-	fmt.Println("response Body:", s)
+	fmt.Println(s)
 }

@@ -32,5 +32,5 @@ func Putbasic(c *cli.Context) {
 	defer resp.Body.Close()
 
 	s := formatresp(resp)
-	fmt.Println("\nresponse Body:\n", s)
+	fmt.Println(s)
 }

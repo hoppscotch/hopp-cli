@@ -31,6 +31,6 @@ func Getbasic(c *cli.Context) error {
 	}
 	defer resp.Body.Close()
 	s := formatresp(resp)
-	fmt.Printf("\n%s", s)
+	fmt.Println(s)
 	return nil
 }
