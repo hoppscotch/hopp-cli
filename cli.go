@@ -83,6 +83,15 @@ func main() {
 				return nil
 			},
 		},
+		{
+			Name:  "put",
+			Usage: "Send a PUT Request",
+			Flags: postFlags,
+			Action: func(c *cli.Context) error {
+				mets.Putbasic(c)
+				return nil
+			},
+		},
 	}
 	err := app.Run(os.Args)
 	if err != nil {
