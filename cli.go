@@ -11,6 +11,7 @@ import (
 func main() {
 	app := cli.NewApp()
 	app.Name = "Postwoman CLI"
+	app.Version = "0.0.1"
 	app.Usage = "Test API endpoints without the hassle"
 	app.Description = "Made with <3 by Postwoman Team"
 
@@ -98,6 +99,15 @@ func main() {
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
 				mets.Patchbasic(c)
+				return nil
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "Send a DELETE Request",
+			Flags: postFlags,
+			Action: func(c *cli.Context) error {
+				mets.Deletebasic(c)
 				return nil
 			},
 		},
