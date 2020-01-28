@@ -1,20 +1,20 @@
 package methods
 
 import (
+	"bytes"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/urfave/cli"
 )
 
-//Getbasic sends a simple GET request to the url with any potential parameters like Tokens or Basic Auth
-func Getbasic(c *cli.Context) error {
-	var url = c.String("url")
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return err
-	}
+//Putbasic sends a basic PUT request
+func Putbasic(c *cli.Context) {
+	url := c.String("url")
+	var jsonStr = []byte(c.String("body"))
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonStr))
+	//req.Header.Set("X-Custom-Header", "myvalue")
+	req.Header.Set("Content-Type", c.String("ctype"))
 	if c.String("token") != "" {
 		var bearer = "Bearer " + c.String("token")
 		req.Header.Add("Authorization", bearer)
@@ -27,10 +27,10 @@ func Getbasic(c *cli.Context) error {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println("Error on response.\n[ERRO] -", err)
+		panic(err)
 	}
 	defer resp.Body.Close()
+
 	s := formatresp(resp)
 	fmt.Println(s)
-	return nil
 }
