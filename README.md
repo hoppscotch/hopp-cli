@@ -1,4 +1,4 @@
-# PostWoman CLI   [![Build Status](https://travis-ci.com/athul/pwcli.svg?token=udLtq6DyJs4Gxpze9nqX&branch=master)](https://travis-ci.com/athul/pwcli)
+# PostWoman CLI   [![Build Status](https://travis-ci.com/athul/pwcli.svg?token=udLtq6DyJs4Gxpze9nqX&branch=master)](https://travis-ci.com/athul/pwcli)[![Postwoman](https://img.shields.io/badge/Made_for-Postwoman-hex_color_code?logo=Postwoman)](https://postwoman.io)
 Use Postwoman's CLI direct from your terminal.
 
 # Installation
@@ -8,7 +8,7 @@ Use Postwoman's CLI direct from your terminal.
 - Build using `go build`
 - Move Binary to `/usr/local/bin/`
 ### From Binary
-- You can find the Binaries in Gzipped form from the [Releases](https://github.com/athul/pwcli/releases)page
+- You can find the Binaries in Gzipped form from the [Releases](https://github.com/athul/pwcli/releases) page      
 **Supports**
 - Linux(x64,x86)
 - Mac(x64)
