@@ -1,0 +1,21 @@
+sudo: false
+language: go
+
+go:
+  - "1.13"
+before_script:
+  - go get -v
+  - go build
+  - ./pwcli
+#
+# before we deploy, we go build for all operating systems we would like to support
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: curl -sL https://git.io/goreleaser | bash
+  on:
+    tags: true
+
+after_script:
+  - curl https://raw.githubusercontent.com/athul/autom/master/tg_notification.sh > tg_notifier.sh
+  - bash tg_notifier.sh
