@@ -1,5 +1,6 @@
-# PostWoman CLI
+# PostWoman CLI   [![Build Status](https://travis-ci.com/athul/pwcli.svg?token=udLtq6DyJs4Gxpze9nqX&branch=master)](https://travis-ci.com/athul/pwcli)
 Use Postwoman's CLI direct from your terminal.
+
 
 # Usages
 ```

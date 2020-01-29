@@ -7,6 +7,7 @@ before_script:
   - go get -v
   - go build
   - ./pwcli
+  - rm pwcli
 #
 # before we deploy, we go build for all operating systems we would like to support
 deploy:
