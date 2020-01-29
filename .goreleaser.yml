@@ -42,3 +42,12 @@ release:
   github:
     owner: athul
     name: pwcli
+brews:
+- name: pwcli
+  github:
+    owner: athul
+    name: homebrew-tap
+  folder: Formula
+  homepage: "https://github.com/athul/pwcli"
+  description: "Postwoman CLI in Go"
+  install: bin.install "pwcli"
