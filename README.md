@@ -8,7 +8,7 @@ Use Postwoman's CLI direct from your terminal.
 - Build using `go build`
 - Move Binary to `/usr/local/bin/`
 ### From Binary
-- You can find the Binaries in Gzipped form from the [Releases](https://github.com/athul/pwcli releases)page
+- You can find the Binaries in Gzipped form from the [Releases](https://github.com/athul/pwcli/releases)page
 **Supports**
 - Linux(x64,x86)
 - Mac(x64)
