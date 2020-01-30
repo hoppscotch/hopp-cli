@@ -64,7 +64,13 @@ func main() {
 			Usage: "Body of the Post Request",
 		},
 	}
-
+	sendFlag := []cli.Flag{
+		cli.StringFlag{
+			Name:     "pt",
+			Usage:    "The Path of Postwoman Collection.json",
+			Required: true,
+		},
+	}
 	app.Commands = []cli.Command{
 		{
 			Name:  "get",
@@ -108,6 +114,15 @@ func main() {
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
 				mets.Deletebasic(c)
+				return nil
+			},
+		},
+		{
+			Name:  "send",
+			Usage: "Test all the Endpoints in the Postwoman Collection.json",
+			Flags: sendFlag,
+			Action: func(c *cli.Context) error {
+				mets.ReadCollection(c)
 				return nil
 			},
 		},

@@ -1,3 +1,13 @@
+package methods
+
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+
+	"github.com/urfave/cli"
+)
+
 //Colls hold the format of the basic `postwoman-collection.json`
 type Colls struct {
 	Name    string    `json:"name"`
@@ -26,8 +36,9 @@ type Bpardata struct {
 	Value string `json:"value"`
 }
 
-func main() {
-	data, err := ioutil.ReadFile("/Users/athul/Downloads/pwclc.json")
+//ReadCollection reads the PostWoman Collection Json File and does the Magic Stuff
+func ReadCollection(c *cli.Context) {
+	data, err := ioutil.ReadFile(c.String("pt"))
 	if err != nil {
 		fmt.Print(err)
 	}
@@ -38,19 +49,25 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	//fmt.Println(jsondat)
-	//fmt.Print(jsondat[0].Name + "\n")
-	//fmt.Println(jsondat[0].Request[4].URL)
-	//fmt.Println(jsondat[0].Request[0].Method)
 	for i := 0; i < len(jsondat[0].Request); i++ {
 		fmt.Printf(`
-		URL: %s 
+		URL: %s%s 
 		Method: %s
 		Auth: %s
-		-------`, jsondat[0].Request[i].URL, jsondat[0].Request[i].Method, jsondat[0].Request[i].Auth)
+		-------`, jsondat[0].Request[i].URL, jsondat[0].Request[i].Path, jsondat[0].Request[i].Method, jsondat[0].Request[i].Auth)
+		request(jsondat, i)
 	}
 
 }
-func request(){
-	
+func request(c []Colls, i int) {
+	if c[0].Request[i].Method == "GET" || c[0].Request[i].Method == "POST" {
+		//fmt.Print(c[0].Request[i].Method)
+		out, err := getsend(c, i, c[0].Request[i].Method)
+		if err != nil {
+			fmt.Print(err)
+		}
+
+		fmt.Printf("%s  %d", out, i)
+	}
+
 }
