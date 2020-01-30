@@ -36,3 +36,4 @@
 
 # End of https://www.gitignore.io/api/go,visualstudiocode
 docs.md
+.DS_Store
