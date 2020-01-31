@@ -34,27 +34,3 @@ func Getbasic(c *cli.Context) error {
 	fmt.Println(s)
 	return nil
 }
-func getsend(c []Colls, ind int, method string) (string, error) {
-	var url = c[0].Request[ind].URL + c[0].Request[ind].Path
-	req, err := http.NewRequest(method, url, nil)
-	if err != nil {
-		return "", err
-	}
-	if c[0].Request[ind].Token != "" {
-		var bearer = "Bearer " + c[0].Request[ind].Token
-		req.Header.Add("Authorization", bearer)
-	}
-	if c[0].Request[ind].User != "" && c[0].Request[ind].Pass != "" {
-		un := c[0].Request[ind].User
-		pw := c[0].Request[ind].Pass
-		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
-	}
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Println("Error on response.\n[ERRO] -", err)
-	}
-	defer resp.Body.Close()
-	s := fmt.Sprintf("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode)
-	return s, nil
-}
