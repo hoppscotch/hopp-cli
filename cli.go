@@ -5,15 +5,16 @@ import (
 	"os"
 
 	mets "github.com/athul/pwcli/methods"
+	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "Postwoman CLI"
-	app.Version = "0.0.1"
-	app.Usage = "Test API endpoints without the hassle"
-	app.Description = "Made with <3 by Postwoman Team"
+	app.Name = color.HiGreenString("Postwoman CLI")
+	app.Version = color.HiRedString("0.0.2")
+	app.Usage = color.HiYellowString("Test API endpoints without the hassle")
+	app.Description = color.HiBlueString("Made with <3 by Postwoman Team")
 
 	getFlags := []cli.Flag{
 		cli.StringFlag{
