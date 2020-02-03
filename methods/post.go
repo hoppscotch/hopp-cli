@@ -29,7 +29,7 @@ func Postbasic(c *cli.Context) {
 	if err != nil {
 		panic(err)
 	}
-	defer resp.Body.Close()
+	//defer resp.Body.Close()
 	s := formatresp(resp)
 	fmt.Println(s)
 }

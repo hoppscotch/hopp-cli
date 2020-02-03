@@ -29,7 +29,7 @@ func Getbasic(c *cli.Context) error {
 	if err != nil {
 		log.Println("Error on response.\n[ERRO] -", err)
 	}
-	defer resp.Body.Close()
+
 	s := formatresp(resp)
 	fmt.Println(s)
 	return nil

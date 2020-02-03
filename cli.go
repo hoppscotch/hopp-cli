@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -128,6 +129,13 @@ func main() {
 			},
 		},
 	}
+	cli.AppHelpTemplate = fmt.Sprintf(`%sS
+
+	WE REALLY NEED YOUR FEEDBACK, 
+
+	CREATE A NEW ISSUE FOR BUGS AND FEATURE REQUESTS : <http://github.com/athul/pwcli>
+	`, cli.AppHelpTemplate)
+
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
