@@ -25,7 +25,7 @@ func main() {
 			Required: true,
 		},
 		cli.StringFlag{
-			Name:  "token",
+			Name:  "token, t",
 			Usage: "Send the Request with Bearer Token",
 		},
 		cli.StringFlag{
@@ -45,7 +45,7 @@ func main() {
 			Required: true,
 		},
 		cli.StringFlag{
-			Name:  "token",
+			Name:  "token, t",
 			Usage: "Send the Request with Bearer Token",
 		},
 		cli.StringFlag{
@@ -57,12 +57,12 @@ func main() {
 			Usage: "Add the Password",
 		},
 		cli.StringFlag{
-			Name:  "ctype",
+			Name:  "ctype, c",
 			Value: "application/json",
 			Usage: "Change the Content Type",
 		},
 		cli.StringFlag{
-			Name:  "body",
+			Name:  "body, b",
 			Usage: "Body of the Post Request",
 		},
 	}
