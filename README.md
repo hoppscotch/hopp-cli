@@ -17,6 +17,8 @@ Use Postwoman's CLI direct from your terminal.
 ### Homebrew
 Install by `brew install athul/tap/pwcli`
 
+> **IMPORTANT: Not tested on Windows, please leave your feedback/bugs in the Issues section**
+
 # Usages
 ```
 NAME:
