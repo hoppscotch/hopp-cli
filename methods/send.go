@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/fatih/color"
 	"github.com/urfave/cli"
@@ -43,7 +44,11 @@ type Bpardata struct {
 
 //ReadCollection reads the PostWoman Collection Json File and does the Magic Stuff
 func ReadCollection(c *cli.Context) {
-	data, err := ioutil.ReadFile(c.String("pt"))
+	data, err := ioutil.ReadFile(c.Args().Get(0))
+	if string(data) == "" {
+		fmt.Print("PATH is needed")
+		os.Exit(0)
+	}
 	if err != nil {
 		fmt.Print(err)
 	}

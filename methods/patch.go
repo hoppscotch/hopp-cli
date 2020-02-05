@@ -4,13 +4,18 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/urfave/cli"
 )
 
 //Patchbasic sends a basic PATCH request
 func Patchbasic(c *cli.Context) {
-	url := c.String("url")
+	url := c.Args().Get(0)
+	if url == "" {
+		fmt.Print("URL is needed")
+		os.Exit(0)
+	}
 	var jsonStr = []byte(c.String("body"))
 	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(jsonStr))
 	//req.Header.Set("X-Custom-Header", "myvalue")
@@ -32,4 +37,5 @@ func Patchbasic(c *cli.Context) {
 	//defer resp.Body.Close()
 	s := formatresp(resp)
 	fmt.Println(s)
+
 }

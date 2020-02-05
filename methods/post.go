@@ -4,13 +4,18 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/urfave/cli"
 )
 
 //Postbasic sends a basic POST request
 func Postbasic(c *cli.Context) {
-	url := c.String("url")
+	url := c.Args().Get(0)
+	if url == "" {
+		fmt.Print("URL is needed")
+		os.Exit(0)
+	}
 	var jsonStr = []byte(c.String("body"))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	//req.Header.Set("X-Custom-Header", "myvalue")

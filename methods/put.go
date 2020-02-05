@@ -9,8 +9,12 @@ import (
 )
 
 //Putbasic sends a basic PUT request
-func Putbasic(c *cli.Context) {
-	url := c.String("url")
+func Putbasic(c *cli.Context) error {
+	url := c.Args().Get(0)
+	if url == "" {
+		fmt.Print("URL is needed")
+		return nil
+	}
 	var jsonStr = []byte(c.String("body"))
 	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonStr))
 	//req.Header.Set("X-Custom-Header", "myvalue")
@@ -32,4 +36,5 @@ func Putbasic(c *cli.Context) {
 	//defer resp.Body.Close()
 	s := formatresp(resp)
 	fmt.Println(s)
+	return nil
 }

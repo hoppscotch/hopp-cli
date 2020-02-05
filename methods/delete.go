@@ -9,8 +9,12 @@ import (
 )
 
 //Deletebasic sends a basic DELETE request
-func Deletebasic(c *cli.Context) {
-	url := c.String("url")
+func Deletebasic(c *cli.Context) error {
+	url := c.Args().Get(0)
+	if url == "" {
+		fmt.Print("URL is needed")
+		return nil
+	}
 	var jsonStr = []byte(c.String("body"))
 	req, err := http.NewRequest("DELETE", url, bytes.NewBuffer(jsonStr))
 	//req.Header.Set("X-Custom-Header", "myvalue")
@@ -32,4 +36,5 @@ func Deletebasic(c *cli.Context) {
 	//defer resp.Body.Close()
 	s := formatresp(resp)
 	fmt.Println(s)
+	return nil
 }

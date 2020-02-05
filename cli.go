@@ -19,12 +19,6 @@ func main() {
 
 	getFlags := []cli.Flag{
 		cli.StringFlag{
-			Name:     "url",
-			Value:    "https://reqres.in/api/users",
-			Usage:    "The URL/Endpoint you want to check",
-			Required: true,
-		},
-		cli.StringFlag{
 			Name:  "token, t",
 			Usage: "Send the Request with Bearer Token",
 		},
@@ -38,12 +32,6 @@ func main() {
 		},
 	}
 	postFlags := []cli.Flag{
-		cli.StringFlag{
-			Name:     "url",
-			Value:    "https://reqres.in/api/users",
-			Usage:    "The URL/Endpoint you want to check",
-			Required: true,
-		},
 		cli.StringFlag{
 			Name:  "token, t",
 			Usage: "Send the Request with Bearer Token",
@@ -66,13 +54,13 @@ func main() {
 			Usage: "Body of the Post Request",
 		},
 	}
-	sendFlag := []cli.Flag{
+	/* sendFlag := []cli.Flag{
 		cli.StringFlag{
 			Name:     "pt",
 			Usage:    "The Path of Postwoman Collection.json",
 			Required: true,
 		},
-	}
+	} */
 	app.Commands = []cli.Command{
 		{
 			Name:  "get",
@@ -122,7 +110,7 @@ func main() {
 		{
 			Name:  "send",
 			Usage: "Test all the Endpoints in the Postwoman Collection.json",
-			Flags: sendFlag,
+			//Flags: sendFlag,
 			Action: func(c *cli.Context) error {
 				mets.ReadCollection(c)
 				return nil
@@ -133,7 +121,7 @@ func main() {
 
 	WE REALLY NEED YOUR FEEDBACK, 
 
-	CREATE A NEW ISSUE FOR BUGS AND FEATURE REQUESTS : <http://github.com/athul/pwcli>
+	CREATE A NEW ISSUE FOR BUGS AND FEATURE REQUESTS : < http://github.com/athul/pwcli >
 	`, cli.AppHelpTemplate)
 
 	err := app.Run(os.Args)
