@@ -23,61 +23,25 @@ Install by `brew install athul/tap/pwcli`
 > **IMPORTANT: Not tested on Windows, please leave your feedback/bugs in the Issues section**
 
 # Usages
-```
-NAME:
-   Postwoman CLI - Test API endpoints without the hassle
 
-USAGE:
-   cli [global options] command [command options] [arguments...]
+Putting Simply: **Just pass the URL to the request method**
 
-VERSION:
-   0.0.1
 
-DESCRIPTION:
-   Made with <3 by Postwoman Team
+- GET : `pwcli get <url> -t/--token <token> -u <username for basic auth> -p <password for basic auth>`
+- POST: `pwcli post <url> < -t/-u/-p > -c/--content type <content type> -b/--body <body>`
+- PATCH: `pwcli patch <url> < -t/-u/-p > -c/--content type <content type> -b/--body <body>`
+- PUT : `pwcli put <url> < -t/-u/-p > -c/--content type <content type> -b/--body <body>`
+- DELETE: `pwcli delete <url> < -t/-u/-p > -c/--content type <content type> -b/--body <body>`
 
-COMMANDS:
-   get      Send a GET request
-   post     Send a POST Request
-   put      Send a PUT Request
-   patch    Send a PATCH Request
-   delete   Send a DELETE Request
-   help, h  Shows a list of commands or help for one command
-
-GLOBAL OPTIONS:
-   --help, -h     show help
-   --version, -v  print the version
-```
-----
-## GET
-**Usage**  
-```
-NAME:
-   cli get - Send a GET request
-
-USAGE:
-   cli get [command options] [arguments...]
-
-OPTIONS:
-   --url value    The URL/Endpoint you want to check (default: "https://reqres.in/api/users")
-   --token value  Send the Request with Bearer Token
-   -u value       Add the Username
-   -p value       Add the Password
-```
-## POST
-**Usage**   
-```
-NAME:
-   cli post - Send a POST Request
-
-USAGE:
-   cli post [command options] [arguments...]
-
-OPTIONS:
-   --url value    The URL/Endpoint you want to check (default: "https://reqres.in/api/users")
-   --token value  Send the Request with Bearer Token
-   -u value       Add the Username
-   -p value       Add the Password
-   --ctype value  Change the Content Type (default: "application/json")
-   --body value   Body of the Post Request
+## Extra
+**SEND**: This can be used to test multiple endpoints from the `postwoman-collection.json` file. The output will only be the `statuscode`.       
+RUN: `pwcli send <PATH to postwoman collection.json>`      
+OUTPUT: 
+```sh
+Name:	New Tests
+Poster |	https://httpbin.org/get |	DELETE |	Status: 405 Method Not Allowed	StatusCode:	405
+Poster |	https://httpbin.org/get |	HEAD |	Status: 200 OK	StatusCode:	200
+http://httpbin.org/basic-auth/user/pass 	GET	Status: 200 OK	StatusCode:	200
+http://httpbin.org/bearer 	GET	Status: 200 OK	StatusCode:	200
+poster |	http://httpbin.org/post |	POST |	Status: 200 OK	StatusCode:	200
 ```
