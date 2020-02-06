@@ -2,7 +2,10 @@
 Use Postwoman's CLI direct from your terminal.
 
 # Installation
-
+### From Script
+```bash
+$ sh -c "$(curl -sL https://git.io/getwcli)"
+```
 ### From Source
 - Clone the repo
 - Build using `go build`
