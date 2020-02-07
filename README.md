@@ -37,11 +37,4 @@ Putting Simply: **Just pass the URL to the request method**
 **SEND**: This can be used to test multiple endpoints from the `postwoman-collection.json` file. The output will only be the `statuscode`.       
 RUN: `pwcli send <PATH to postwoman collection.json>`      
 OUTPUT: 
-```sh
-Name:	New Tests
-Poster |	https://httpbin.org/get |	DELETE |	Status: 405 Method Not Allowed	StatusCode:	405
-Poster |	https://httpbin.org/get |	HEAD |	Status: 200 OK	StatusCode:	200
-http://httpbin.org/basic-auth/user/pass 	GET	Status: 200 OK	StatusCode:	200
-http://httpbin.org/bearer 	GET	Status: 200 OK	StatusCode:	200
-poster |	http://httpbin.org/post |	POST |	Status: 200 OK	StatusCode:	200
-```
+![](/assets/send.png)
