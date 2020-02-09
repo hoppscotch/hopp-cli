@@ -10,9 +10,9 @@ import (
 
 //Deletebasic sends a basic DELETE request
 func Deletebasic(c *cli.Context) error {
-	url := c.Args().Get(0)
-	if url == "" {
-		fmt.Print("URL is needed")
+	url, err := checkURL(c.Args().Get(0))
+	if err != nil {
+		fmt.Printf("%s\n", err.Error())
 		return nil
 	}
 	var jsonStr = []byte(c.String("body"))

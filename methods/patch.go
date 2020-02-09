@@ -11,9 +11,9 @@ import (
 
 //Patchbasic sends a basic PATCH request
 func Patchbasic(c *cli.Context) {
-	url := c.Args().Get(0)
-	if url == "" {
-		fmt.Print("URL is needed")
+	url, err := checkURL(c.Args().Get(0))
+	if err != nil {
+		fmt.Printf("%s\n", err.Error())
 		os.Exit(0)
 	}
 	var jsonStr = []byte(c.String("body"))
