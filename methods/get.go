@@ -12,9 +12,9 @@ import (
 
 //Getbasic sends a simple GET request to the url with any potential parameters like Tokens or Basic Auth
 func Getbasic(c *cli.Context) {
-	var url = c.Args().Get(0)
-	if url == "" {
-		fmt.Print("URL is needed")
+	var url, err = checkURL(c.Args().Get(0))
+	if err != nil {
+		fmt.Printf("%s\n", err.Error())
 		os.Exit(0)
 	}
 	req, err := http.NewRequest("GET", url, nil)
