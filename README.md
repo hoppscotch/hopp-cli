@@ -33,7 +33,14 @@ Putting Simply: **Just pass the URL to the request method**
 - PUT : `pwcli put <url> < -t/-u/-p > -c/--content type <content type> -b/--body <body>`
 - DELETE: `pwcli delete <url> < -t/-u/-p > -c/--content type <content type> -b/--body <body>`
 
-## Extra
+**Content Types can be of**
+`html`   :   `text/html`
+`js`     :   `application/json`,
+`xml`    :   `application/xml`
+`plain`  :   `text/plain`,
+
+
+`` Extra
 **SEND**: This can be used to test multiple endpoints from the `postwoman-collection.json` file. The output will only be the `statuscode`.       
 RUN: `pwcli send <PATH to postwoman collection.json>`      
 OUTPUT: 

@@ -63,16 +63,20 @@ func ReadCollection(c *cli.Context) {
 	}
 
 }
-func request(c []Colls, i int) {
+func request(c []Colls, i int) error {
 	colors := color.New(color.FgHiRed, color.Bold)
+	fURL := colors.Sprintf(c[0].Request[i].URL + c[0].Request[i].Path)
+	// if err != nil {
+	// 	fmt.Printf("%s\n", err.Error())
+	// 	return nil
+	//}
 	if c[0].Request[i].Method == "GET" {
 		out, err := getsend(c, i, "GET")
 		if err != nil {
 			fmt.Print(err)
 		}
 		methods := color.HiYellowString(c[0].Request[i].Method)
-		fURL := colors.Sprintf(c[0].Request[i].URL + c[0].Request[i].Path)
-		fmt.Printf("%s \t%s\t%s", fURL, methods, out)
+		fmt.Printf("%s |\t%s |\t%s |\t%s", color.HiGreenString(c[0].Request[i].Name), fURL, methods, out)
 	} else {
 		out, err := sendpopa(c, i, c[0].Request[i].Method)
 		if err != nil {
@@ -82,11 +86,12 @@ func request(c []Colls, i int) {
 		fURL := colors.Sprintf(c[0].Request[i].URL + c[0].Request[i].Path)
 		fmt.Printf("%s |\t%s |\t%s |\t%s", color.HiGreenString(c[0].Request[i].Name), fURL, methods, out)
 	}
-
+	return nil
 }
 func getsend(c []Colls, ind int, method string) (string, error) {
 	color := color.New(color.FgCyan, color.Bold)
 	var url = c[0].Request[ind].URL + c[0].Request[ind].Path
+	//fmt.Print(url + "  ")
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return "", err
