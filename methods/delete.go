@@ -18,7 +18,7 @@ func Deletebasic(c *cli.Context) error {
 	var jsonStr = []byte(c.String("body"))
 	req, err := http.NewRequest("DELETE", url, bytes.NewBuffer(jsonStr))
 	//req.Header.Set("X-Custom-Header", "myvalue")
-	req.Header.Set("Content-Type", c.String("ctype"))
+	req.Header.Set("Content-Type", Contenttypes[c.String("ctype")])
 	if c.String("token") != "" {
 		var bearer = "Bearer " + c.String("token")
 		req.Header.Add("Authorization", bearer)

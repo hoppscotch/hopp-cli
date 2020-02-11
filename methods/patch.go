@@ -19,7 +19,7 @@ func Patchbasic(c *cli.Context) {
 	var jsonStr = []byte(c.String("body"))
 	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(jsonStr))
 	//req.Header.Set("X-Custom-Header", "myvalue")
-	req.Header.Set("Content-Type", c.String("ctype"))
+	req.Header.Set("Content-Type", Contenttypes[c.String("ctype")])
 	if c.String("token") != "" {
 		var bearer = "Bearer " + c.String("token")
 		req.Header.Add("Authorization", bearer)

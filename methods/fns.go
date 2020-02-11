@@ -39,3 +39,11 @@ func basicAuth(username, password string) string {
 	auth := username + ":" + password
 	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
+
+//Contenttypes can be used in Place for ctypes
+var Contenttypes = map[string]string{
+	"html":  "text/html",
+	"js":    "application/json",
+	"xml":   "application/xml",
+	"plain": "text/plain",
+}

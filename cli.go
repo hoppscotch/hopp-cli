@@ -45,8 +45,8 @@ func main() {
 			Usage: "Add the Password",
 		},
 		cli.StringFlag{
-			Name:  "ctype, c",
-			Value: "application/json",
+			Name: "ctype, c",
+			//Value: "application/json",
 			Usage: "Change the Content Type",
 		},
 		cli.StringFlag{

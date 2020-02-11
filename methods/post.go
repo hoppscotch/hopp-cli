@@ -19,7 +19,8 @@ func Postbasic(c *cli.Context) {
 	var jsonStr = []byte(c.String("body"))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	//req.Header.Set("X-Custom-Header", "myvalue")
-	req.Header.Set("Content-Type", c.String("ctype"))
+	req.Header.Set("Content-Type", Contenttypes[c.String("ctype")])
+	fmt.Print(Contenttypes[c.String("ctype")] + "\n")
 	if c.String("token") != "" {
 		var bearer = "Bearer " + c.String("token")
 		req.Header.Add("Authorization", bearer)
@@ -29,6 +30,7 @@ func Postbasic(c *cli.Context) {
 		pw := c.String("p")
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	}
+	fmt.Print(req.Header)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
