@@ -34,7 +34,7 @@ func formatresp(resp *http.Response) string {
 			magenta.Print(value, "\n")
 		}
 		retbody = yellow.Sprintf("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode) + fmt.Sprintf("\n%s\n", string(s))
-	} else if strings.Contains(heads, "xml") || strings.Contains(heads, "html") {
+	} else if strings.Contains(heads, "xml") || strings.Contains(heads, "html") || strings.Contains(heads, "plain") {
 		for key, value := range resp.Header {
 			c.Print(key, " : ")
 			magenta.Print(value, "\n")
