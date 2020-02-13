@@ -3,9 +3,9 @@ module github.com/athul/pwcli
 go 1.13
 
 require (
-	github.com/TylerBrock/colorjson v0.0.0-20180527164720-95ec53f28296
 	github.com/fatih/color v1.9.0
-	github.com/hokaccha/go-prettyjson v0.0.0-20190818114111-108c894c2c0e // indirect
+	github.com/stretchr/testify v1.4.0 // indirect
+	github.com/tidwall/pretty v1.0.1
 	github.com/urfave/cli v1.22.2
 	github.com/yosssi/gohtml v0.0.0-20190915184251-7ff6f235ecaf
 	golang.org/x/net v0.0.0-20200202094626-16171245cfb2 // indirect

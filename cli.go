@@ -45,8 +45,7 @@ func main() {
 			Usage: "Add the Password",
 		},
 		cli.StringFlag{
-			Name: "ctype, c",
-			//Value: "application/json",
+			Name:  "ctype, c", //Content Type Flag
 			Usage: "Change the Content Type",
 		},
 		cli.StringFlag{
@@ -54,13 +53,6 @@ func main() {
 			Usage: "Body of the Post Request",
 		},
 	}
-	/* sendFlag := []cli.Flag{
-		cli.StringFlag{
-			Name:     "pt",
-			Usage:    "The Path of Postwoman Collection.json",
-			Required: true,
-		},
-	} */
 	app.Commands = []cli.Command{
 		{
 			Name:  "get",
@@ -121,7 +113,6 @@ func main() {
 	err := app.Run(os.Args)
 	if err != nil {
 		l := log.New(os.Stderr, "", 0)
-		c := color.New(color.FgRed).Add(color.Bold)
-		l.Println(c.Sprintf("\n%s", err.Error()))
+		l.Println(color.HiRedString("\n%s", err.Error()))
 	}
 }
