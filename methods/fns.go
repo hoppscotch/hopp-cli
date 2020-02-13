@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 
@@ -15,13 +14,18 @@ import (
 )
 
 // Formatresp formats the Response with Indents and Colors
-func formatresp(resp *http.Response) string {
+func formatresp(resp *http.Response) (string, error) {
 	var retbody string
 	heads := fmt.Sprint(resp.Header)
 	c := color.New(color.FgCyan, color.Bold)
 	magenta := color.New(color.FgHiMagenta)
 	yellow := color.New(color.FgHiYellow)
+
 	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("Error reading response body: %s", err.Error())
+	}
+
 	str := string(body)
 	if strings.Contains(heads, "json") {
 		var obj map[string]interface{}
@@ -39,19 +43,15 @@ func formatresp(resp *http.Response) string {
 			c.Print(key, " : ")
 			magenta.Print(value, "\n")
 		}
-                var s string
-                if strings.Contains(heads, "plain") {
-                    s = str
-                } else {
-		    s = c.Sprint(gohtml.Format(str))
+		var s string
+		if strings.Contains(heads, "plain") {
+			s = str
+		} else {
+			s = c.Sprint(gohtml.Format(str))
 		}
 		retbody = yellow.Sprintf("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode) + fmt.Sprintf("\n%s\n", s)
-
 	}
-	if err != nil {
-		log.Println("Error on response.\n[ERRO] -", err)
-	}
-	return retbody
+	return retbody, nil
 }
 
 func basicAuth(username, password string) string {

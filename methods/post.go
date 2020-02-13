@@ -4,17 +4,15 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/urfave/cli"
 )
 
 //Postbasic sends a basic POST request
-func Postbasic(c *cli.Context) {
+func Postbasic(c *cli.Context) error {
 	url, err := checkURL(c.Args().Get(0))
 	if err != nil {
-		fmt.Printf("%s\n", err.Error())
-		os.Exit(0)
+		return err
 	}
 	var jsonStr = []byte(c.String("body"))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
@@ -34,9 +32,13 @@ func Postbasic(c *cli.Context) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("Error sending request: %s", err.Error())
 	}
 	//defer resp.Body.Close()
-	s := formatresp(resp)
+	s, err := formatresp(resp)
+	if err != nil {
+		return err
+	}
 	fmt.Println(s)
+	return nil
 }

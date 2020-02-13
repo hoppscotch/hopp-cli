@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	mets "github.com/athul/pwcli/methods"
@@ -67,8 +66,7 @@ func main() {
 			Usage: "Send a GET request",
 			Flags: getFlags,
 			Action: func(c *cli.Context) error {
-				mets.Getbasic(c)
-				return nil
+				return mets.Getbasic(c)
 			},
 		},
 		{
@@ -76,8 +74,7 @@ func main() {
 			Usage: "Send a POST Request",
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
-				mets.Postbasic(c)
-				return nil
+				return mets.Postbasic(c)
 			},
 		},
 		{
@@ -85,8 +82,7 @@ func main() {
 			Usage: "Send a PUT Request",
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
-				mets.Putbasic(c)
-				return nil
+				return mets.Putbasic(c)
 			},
 		},
 		{
@@ -94,8 +90,7 @@ func main() {
 			Usage: "Send a PATCH Request",
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
-				mets.Patchbasic(c)
-				return nil
+				return mets.Patchbasic(c)
 			},
 		},
 		{
@@ -103,8 +98,7 @@ func main() {
 			Usage: "Send a DELETE Request",
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
-				mets.Deletebasic(c)
-				return nil
+				return mets.Deletebasic(c)
 			},
 		},
 		{
@@ -112,8 +106,7 @@ func main() {
 			Usage: "Test all the Endpoints in the Postwoman Collection.json",
 			//Flags: sendFlag,
 			Action: func(c *cli.Context) error {
-				mets.ReadCollection(c)
-				return nil
+				return mets.ReadCollection(c)
 			},
 		},
 	}
@@ -126,6 +119,7 @@ func main() {
 
 	err := app.Run(os.Args)
 	if err != nil {
-		log.Fatal(err)
+		c := color.New(color.FgRed).Add(color.Bold)
+		c.Println(fmt.Sprintf("\n%s", err.Error()))
 	}
 }

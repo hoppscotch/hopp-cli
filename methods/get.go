@@ -2,25 +2,20 @@ package methods
 
 import (
 	"fmt"
-	"log"
 	"net/http"
-	"os"
 
-	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
 
 //Getbasic sends a simple GET request to the url with any potential parameters like Tokens or Basic Auth
-func Getbasic(c *cli.Context) {
+func Getbasic(c *cli.Context) error {
 	var url, err = checkURL(c.Args().Get(0))
 	if err != nil {
-		fmt.Printf("%s\n", err.Error())
-		os.Exit(0)
+		return err
 	}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		log.Println("Error on Request.\nDid you give a correct URL? Try giving that")
-		os.Exit(0)
+		return fmt.Errorf("Error creating request: %s", err.Error())
 	}
 	if c.String("token") != "" {
 		var bearer = "Bearer " + c.String("token")
@@ -34,10 +29,14 @@ func Getbasic(c *cli.Context) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println(color.RedString("Error on response.\nDid you give a correct URL? Try giving that"))
+		return fmt.Errorf("Error sending request: %s", err.Error())
 	}
 
-	s := formatresp(resp)
-	fmt.Println(s)
+	s, err := formatresp(resp)
+	if err != nil {
+		return err
+	}
 
+	fmt.Println(s)
+	return nil
 }
