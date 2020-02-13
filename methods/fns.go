@@ -2,56 +2,44 @@ package methods
 
 import (
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 
-	"github.com/TylerBrock/colorjson"
 	"github.com/fatih/color"
+	"github.com/tidwall/pretty"
 	"github.com/yosssi/gohtml"
 )
 
 // Formatresp formats the Response with Indents and Colors
-func formatresp(resp *http.Response) string {
+func formatresp(resp *http.Response) (string, error) {
 	var retbody string
 	heads := fmt.Sprint(resp.Header)
-	c := color.New(color.FgCyan, color.Bold)
+	c := color.New(color.FgHiCyan)
 	magenta := color.New(color.FgHiMagenta)
-	yellow := color.New(color.FgHiYellow)
+
 	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("Error reading response body: %s", err.Error())
+	}
+	for key, value := range resp.Header {
+		c.Print(key, " : ")
+		magenta.Print(value, "\n")
+	}
 	str := string(body)
 	if strings.Contains(heads, "json") {
-		var obj map[string]interface{}
-		json.Unmarshal([]byte(str), &obj)
-		f := colorjson.NewFormatter()
-		f.Indent = 6
-		s, _ := f.Marshal(obj)
-		for key, value := range resp.Header {
-			c.Print(key, " : ")
-			magenta.Print(value, "\n")
-		}
-		retbody = yellow.Sprintf("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode) + fmt.Sprintf("\n%s\n", string(s))
+		retbody = color.HiYellowString("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode) + fmt.Sprintf("\n%s\n", string(pretty.Color(pretty.Pretty(body), nil)))
 	} else if strings.Contains(heads, "xml") || strings.Contains(heads, "html") || strings.Contains(heads, "plain") {
-		for key, value := range resp.Header {
-			c.Print(key, " : ")
-			magenta.Print(value, "\n")
+		var s string
+		if strings.Contains(heads, "plain") {
+			s = str
+		} else {
+			s = c.Sprint(gohtml.Format(str))
 		}
-                var s string
-                if strings.Contains(heads, "plain") {
-                    s = str
-                } else {
-		    s = c.Sprint(gohtml.Format(str))
-		}
-		retbody = yellow.Sprintf("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode) + fmt.Sprintf("\n%s\n", s)
-
+		retbody = color.HiYellowString("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode) + fmt.Sprintf("\n%s\n", s)
 	}
-	if err != nil {
-		log.Println("Error on response.\n[ERRO] -", err)
-	}
-	return retbody
+	return retbody, nil
 }
 
 func basicAuth(username, password string) string {

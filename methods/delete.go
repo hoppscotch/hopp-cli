@@ -12,8 +12,7 @@ import (
 func Deletebasic(c *cli.Context) error {
 	url, err := checkURL(c.Args().Get(0))
 	if err != nil {
-		fmt.Printf("%s\n", err.Error())
-		return nil
+		return fmt.Errorf("URL validation error: %s", err.Error())
 	}
 	var jsonStr = []byte(c.String("body"))
 	req, err := http.NewRequest("DELETE", url, bytes.NewBuffer(jsonStr))
@@ -31,10 +30,15 @@ func Deletebasic(c *cli.Context) error {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("Request error: %s", err.Error())
 	}
-	//defer resp.Body.Close()
-	s := formatresp(resp)
+	defer resp.Body.Close()
+
+	s, err := formatresp(resp)
+	if err != nil {
+		return err
+	}
+
 	fmt.Println(s)
 	return nil
 }

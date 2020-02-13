@@ -45,8 +45,7 @@ func main() {
 			Usage: "Add the Password",
 		},
 		cli.StringFlag{
-			Name: "ctype, c",
-			//Value: "application/json",
+			Name:  "ctype, c", //Content Type Flag
 			Usage: "Change the Content Type",
 		},
 		cli.StringFlag{
@@ -54,21 +53,13 @@ func main() {
 			Usage: "Body of the Post Request",
 		},
 	}
-	/* sendFlag := []cli.Flag{
-		cli.StringFlag{
-			Name:     "pt",
-			Usage:    "The Path of Postwoman Collection.json",
-			Required: true,
-		},
-	} */
 	app.Commands = []cli.Command{
 		{
 			Name:  "get",
 			Usage: "Send a GET request",
 			Flags: getFlags,
 			Action: func(c *cli.Context) error {
-				mets.Getbasic(c)
-				return nil
+				return mets.Getbasic(c)
 			},
 		},
 		{
@@ -76,8 +67,7 @@ func main() {
 			Usage: "Send a POST Request",
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
-				mets.Postbasic(c)
-				return nil
+				return mets.Postbasic(c)
 			},
 		},
 		{
@@ -85,8 +75,7 @@ func main() {
 			Usage: "Send a PUT Request",
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
-				mets.Putbasic(c)
-				return nil
+				return mets.Putbasic(c)
 			},
 		},
 		{
@@ -94,8 +83,7 @@ func main() {
 			Usage: "Send a PATCH Request",
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
-				mets.Patchbasic(c)
-				return nil
+				return mets.Patchbasic(c)
 			},
 		},
 		{
@@ -103,17 +91,14 @@ func main() {
 			Usage: "Send a DELETE Request",
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
-				mets.Deletebasic(c)
-				return nil
+				return mets.Deletebasic(c)
 			},
 		},
 		{
 			Name:  "send",
 			Usage: "Test all the Endpoints in the Postwoman Collection.json",
-			//Flags: sendFlag,
 			Action: func(c *cli.Context) error {
-				mets.ReadCollection(c)
-				return nil
+				return mets.ReadCollection(c)
 			},
 		},
 	}
@@ -122,10 +107,12 @@ func main() {
 	WE REALLY NEED YOUR FEEDBACK, 
 
 	CREATE A NEW ISSUE FOR BUGS AND FEATURE REQUESTS : < http://github.com/athul/pwcli >
+	
 	`, cli.AppHelpTemplate)
 
 	err := app.Run(os.Args)
 	if err != nil {
-		log.Fatal(err)
+		l := log.New(os.Stderr, "", 0)
+		l.Println(color.HiRedString("\n%s", err.Error()))
 	}
 }

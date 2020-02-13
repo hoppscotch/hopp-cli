@@ -4,7 +4,7 @@ Use Postwoman's CLI direct from your terminal.
 # Installation
 ### From Script
 ```bash
-$ sh -c "$(curl -sL https://git.io/getwcli)"
+$ sh -c "$(curl -sL https://git.io/getpwcli)"
 ```
 ### From Source
 - Clone the repo

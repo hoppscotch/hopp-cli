@@ -5,9 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
-	"os"
 
 	"github.com/fatih/color"
 	"github.com/urfave/cli"
@@ -43,25 +41,27 @@ type Bpardata struct {
 }
 
 //ReadCollection reads the PostWoman Collection Json File and does the Magic Stuff
-func ReadCollection(c *cli.Context) {
+func ReadCollection(c *cli.Context) error {
 	data, err := ioutil.ReadFile(c.Args().Get(0))
 	if string(data) == "" {
-		fmt.Print("PATH is needed")
-		os.Exit(0)
+		return fmt.Errorf("PATH is needed")
 	}
 	if err != nil {
-		fmt.Print(err)
+		return err
 	}
 	var jsondat []Colls
 	err = json.Unmarshal([]byte(data), &jsondat)
 	if err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("Error parsing JSON: %s", err.Error())
 	}
 	fmt.Println("Name:\t" + color.HiMagentaString(jsondat[0].Name))
 	for i := 0; i < len(jsondat[0].Request); i++ {
-		request(jsondat, i)
+		err := request(jsondat, i)
+		if err != nil {
+			return err
+		}
 	}
-
+	return nil
 }
 func request(c []Colls, i int) error {
 	colors := color.New(color.FgHiRed, color.Bold)
@@ -73,14 +73,14 @@ func request(c []Colls, i int) error {
 	if c[0].Request[i].Method == "GET" {
 		out, err := getsend(c, i, "GET")
 		if err != nil {
-			fmt.Print(err)
+			return err
 		}
 		methods := color.HiYellowString(c[0].Request[i].Method)
 		fmt.Printf("%s |\t%s |\t%s |\t%s", color.HiGreenString(c[0].Request[i].Name), fURL, methods, out)
 	} else {
 		out, err := sendpopa(c, i, c[0].Request[i].Method)
 		if err != nil {
-			fmt.Print(err)
+			return err
 		}
 		methods := color.HiYellowString(c[0].Request[i].Method)
 		fURL := colors.Sprintf(c[0].Request[i].URL + c[0].Request[i].Path)
@@ -94,7 +94,7 @@ func getsend(c []Colls, ind int, method string) (string, error) {
 	//fmt.Print(url + "  ")
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
 	if c[0].Request[ind].Token != "" {
 		var bearer = "Bearer " + c[0].Request[ind].Token
@@ -108,9 +108,9 @@ func getsend(c []Colls, ind int, method string) (string, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println("Error on response.\n[ERRO] -", err)
+		return "", fmt.Errorf("Error sending request: %s", err.Error())
 	}
-	//defer resp.Body.Close()
+	defer resp.Body.Close()
 	//fmt.Print(resp.Header)
 	s := color.Sprintf("Status: %s\tStatusCode:\t%d\n", resp.Status, resp.StatusCode)
 	return s, nil
@@ -127,10 +127,10 @@ func sendpopa(c []Colls, ind int, method string) (string, error) {
 	}
 
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(jsonStr))
-	req.Header.Set("Content-Type", c[0].Request[ind].Ctype)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
+	req.Header.Set("Content-Type", c[0].Request[ind].Ctype)
 	if c[0].Request[ind].Token != "" {
 		var bearer = "Bearer " + c[0].Request[ind].Token
 		req.Header.Add("Authorization", bearer)
@@ -143,9 +143,9 @@ func sendpopa(c []Colls, ind int, method string) (string, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println("Error on response.\n[ERRO] -", err)
+		return "", fmt.Errorf("Error sending request: %s", err.Error())
 	}
-	//defer resp.Body.Close()
+	defer resp.Body.Close()
 	//fmt.Print(resp.Header)
 	s := color.Sprintf("Status: %s\tStatusCode:\t%d\n", resp.Status, resp.StatusCode)
 	return s, nil
