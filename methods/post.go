@@ -34,7 +34,8 @@ func Postbasic(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("Error sending request: %s", err.Error())
 	}
-	//defer resp.Body.Close()
+	defer resp.Body.Close()
+
 	s, err := formatresp(resp)
 	if err != nil {
 		return err

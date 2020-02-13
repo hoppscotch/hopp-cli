@@ -110,7 +110,7 @@ func getsend(c []Colls, ind int, method string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("Error sending request: %s", err.Error())
 	}
-	//defer resp.Body.Close()
+	defer resp.Body.Close()
 	//fmt.Print(resp.Header)
 	s := color.Sprintf("Status: %s\tStatusCode:\t%d\n", resp.Status, resp.StatusCode)
 	return s, nil
@@ -145,7 +145,7 @@ func sendpopa(c []Colls, ind int, method string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("Error sending request: %s", err.Error())
 	}
-	//defer resp.Body.Close()
+	defer resp.Body.Close()
 	//fmt.Print(resp.Header)
 	s := color.Sprintf("Status: %s\tStatusCode:\t%d\n", resp.Status, resp.StatusCode)
 	return s, nil
