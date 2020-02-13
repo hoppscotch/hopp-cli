@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	mets "github.com/athul/pwcli/methods"
@@ -119,7 +120,8 @@ func main() {
 
 	err := app.Run(os.Args)
 	if err != nil {
+		l := log.New(os.Stderr, "", 0)
 		c := color.New(color.FgRed).Add(color.Bold)
-		c.Println(fmt.Sprintf("\n%s", err.Error()))
+		l.Println(c.Sprintf("\n%s", err.Error()))
 	}
 }
