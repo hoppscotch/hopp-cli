@@ -39,7 +39,12 @@ func formatresp(resp *http.Response) string {
 			c.Print(key, " : ")
 			magenta.Print(value, "\n")
 		}
-		s := c.Sprint(gohtml.Format(str))
+                var s string
+                if strings.Contains(heads, "plain") {
+                    s = str
+                } else {
+		    s = c.Sprint(gohtml.Format(str))
+		}
 		retbody = yellow.Sprintf("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode) + fmt.Sprintf("\n%s\n", s)
 
 	}
