@@ -97,7 +97,6 @@ func main() {
 		{
 			Name:  "send",
 			Usage: "Test all the Endpoints in the Postwoman Collection.json",
-			//Flags: sendFlag,
 			Action: func(c *cli.Context) error {
 				return mets.ReadCollection(c)
 			},
@@ -108,6 +107,7 @@ func main() {
 	WE REALLY NEED YOUR FEEDBACK, 
 
 	CREATE A NEW ISSUE FOR BUGS AND FEATURE REQUESTS : < http://github.com/athul/pwcli >
+	
 	`, cli.AppHelpTemplate)
 
 	err := app.Run(os.Args)

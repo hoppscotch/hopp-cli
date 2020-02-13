@@ -16,34 +16,28 @@ import (
 func formatresp(resp *http.Response) (string, error) {
 	var retbody string
 	heads := fmt.Sprint(resp.Header)
-	c := color.New(color.FgCyan, color.Bold)
+	c := color.New(color.FgHiCyan)
 	magenta := color.New(color.FgHiMagenta)
-	yellow := color.New(color.FgHiYellow)
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("Error reading response body: %s", err.Error())
 	}
-
+	for key, value := range resp.Header {
+		c.Print(key, " : ")
+		magenta.Print(value, "\n")
+	}
 	str := string(body)
 	if strings.Contains(heads, "json") {
-		for key, value := range resp.Header {
-			c.Print(key, " : ")
-			magenta.Print(value, "\n")
-		}
-		retbody = yellow.Sprintf("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode) + fmt.Sprintf("\n%s\n", string(pretty.Color(pretty.Pretty(body), nil)))
+		retbody = color.HiYellowString("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode) + fmt.Sprintf("\n%s\n", string(pretty.Color(pretty.Pretty(body), nil)))
 	} else if strings.Contains(heads, "xml") || strings.Contains(heads, "html") || strings.Contains(heads, "plain") {
-		for key, value := range resp.Header {
-			c.Print(key, " : ")
-			magenta.Print(value, "\n")
-		}
 		var s string
 		if strings.Contains(heads, "plain") {
 			s = str
 		} else {
 			s = c.Sprint(gohtml.Format(str))
 		}
-		retbody = yellow.Sprintf("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode) + fmt.Sprintf("\n%s\n", s)
+		retbody = color.HiYellowString("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode) + fmt.Sprintf("\n%s\n", s)
 	}
 	return retbody, nil
 }
