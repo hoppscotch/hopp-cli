@@ -11,7 +11,7 @@ import (
 )
 
 // VERSION is set by `make` during the build to the most recent tag
-var VERSION = "v0.0.4"
+var VERSION = ""
 
 func main() {
 	app := cli.NewApp()

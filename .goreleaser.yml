@@ -7,47 +7,45 @@ before:
     # you may remove this if you don't need go generate
     - go get -v
 builds:
--
-
-  env:
-    - CGO_ENABLED=0
-  ldflags:
-    - -s -w
-  goos:
-    - darwin
-    - linux
-    - windows
-  goarch:
-    - 386
-    - amd64
-  ignore:
-    - goos: darwin
-      goarch: 386
+  - env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X main.VERSION={{.Version}}
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - 386
+      - amd64
+    ignore:
+      - goos: darwin
+        goarch: 386
 archives:
-- replacements:
-    darwin: Darwin
-    linux: Linux
-    amd64: x86_64
+  - replacements:
+      darwin: Darwin
+      linux: Linux
+      amd64: x86_64
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: "{{ .Tag }}"
+  name_template: '{{ .Tag }}'
 changelog:
   sort: asc
   filters:
     exclude:
-    - '^docs:'
-    - '^test:'
+      - '^docs:'
+      - '^test:'
 release:
   github:
     owner: athul
     name: pwcli
 brews:
-- name: pwcli
-  github:
-    owner: athul
-    name: homebrew-tap
-  folder: Formula
-  homepage: "https://github.com/athul/pwcli"
-  description: "Postwoman CLI in Go"
-  install: bin.install "pwcli"
+  - name: pwcli
+    github:
+      owner: athul
+      name: homebrew-tap
+    folder: Formula
+    homepage: 'https://github.com/athul/pwcli'
+    description: 'Postwoman CLI in Go'
+    install: bin.install "pwcli"
