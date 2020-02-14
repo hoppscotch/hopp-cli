@@ -1,5 +1,5 @@
 PREFIX?=/usr/local
-BINDIR?=$(_INSTDIR)/bin
+BINDIR?=$(PREFIX)/bin
 VERSION?=$(shell git tag | grep ^v | sort -V | tail -n 1)
 GOFLAGS?=-ldflags '-X main.VERSION=${VERSION}'
 
