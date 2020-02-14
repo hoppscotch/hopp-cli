@@ -10,10 +10,13 @@ import (
 	"github.com/urfave/cli"
 )
 
+// VERSION is set by `make` during the build to the most recent tag
+var VERSION = "v0.0.4"
+
 func main() {
 	app := cli.NewApp()
 	app.Name = color.HiGreenString("Postwoman CLI")
-	app.Version = color.HiRedString("0.0.2")
+	app.Version = color.HiRedString(VERSION)
 	app.Usage = color.HiYellowString("Test API endpoints without the hassle")
 	app.Description = color.HiBlueString("Made with <3 by Postwoman Team")
 
