@@ -112,7 +112,7 @@ func getsend(c []Colls, ind int, method string) (string, error) {
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	}
 
-	client := &http.Client{}
+	client := getHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("Error sending request: %s", err.Error())
@@ -149,7 +149,7 @@ func sendpopa(c []Colls, ind int, method string) (string, error) {
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	}
 
-	client := &http.Client{}
+	client := getHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("Error sending request: %s", err.Error())

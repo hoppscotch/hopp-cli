@@ -29,7 +29,7 @@ func Postbasic(c *cli.Context) (string, error) {
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	}
 	fmt.Print(req.Header)
-	client := &http.Client{}
+	client := getHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("Error sending request: %s", err.Error())
