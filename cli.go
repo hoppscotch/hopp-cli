@@ -113,7 +113,9 @@ func main() {
 			Name:  "send",
 			Usage: "Test all the Endpoints in the Postwoman Collection.json",
 			Action: func(c *cli.Context) error {
-				return mets.ReadCollection(c)
+				var err error
+				out, err = mets.ReadCollection(c)
+				return err
 			},
 		},
 	}
