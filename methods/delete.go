@@ -9,10 +9,10 @@ import (
 )
 
 //Deletebasic sends a basic DELETE request
-func Deletebasic(c *cli.Context) error {
+func Deletebasic(c *cli.Context) (string, error) {
 	url, err := checkURL(c.Args().Get(0))
 	if err != nil {
-		return fmt.Errorf("URL validation error: %s", err.Error())
+		return "", fmt.Errorf("URL validation error: %s", err.Error())
 	}
 	var jsonStr = []byte(c.String("body"))
 	req, err := http.NewRequest("DELETE", url, bytes.NewBuffer(jsonStr))
@@ -30,15 +30,9 @@ func Deletebasic(c *cli.Context) error {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("Request error: %s", err.Error())
+		return "", fmt.Errorf("Request error: %s", err.Error())
 	}
 	defer resp.Body.Close()
 
-	s, err := formatresp(resp)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(s)
-	return nil
+	return formatresp(resp)
 }

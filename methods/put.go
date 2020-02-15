@@ -9,10 +9,10 @@ import (
 )
 
 //Putbasic sends a basic PUT request
-func Putbasic(c *cli.Context) error {
+func Putbasic(c *cli.Context) (string, error) {
 	url, err := checkURL(c.Args().Get(0))
 	if err != nil {
-		return err
+		return "", err
 	}
 	var jsonStr = []byte(c.String("body"))
 	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonStr))
@@ -30,15 +30,9 @@ func Putbasic(c *cli.Context) error {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("Error sending request: %s", err.Error())
+		return "", fmt.Errorf("Error sending request: %s", err.Error())
 	}
 	defer resp.Body.Close()
 
-	s, err := formatresp(resp)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(s)
-	return nil
+	return formatresp(resp)
 }
