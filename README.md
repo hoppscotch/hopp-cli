@@ -43,22 +43,37 @@ Install by `brew install athul/tap/pwcli`
 # Usages
 
 Putting Simply: **Just pass the URL to the request method**
+## Basic
+- GET : `pwcli get <url> `
+- POST: `pwcli post <url> `
+- PATCH: `pwcli patch <url>`
+- PUT : `pwcli put <url>`
+- DELETE: `pwcli delete <url>`
 
-- GET : `pwcli get <url> -t/--token <token> -u <username for basic auth> -p <password for basic auth>`
-- POST: `pwcli post <url> < -t/-u/-p > -c/--content type <content type> -b/--body <body>`
-- PATCH: `pwcli patch <url> < -t/-u/-p > -c/--content type <content type> -b/--body <body>`
-- PUT : `pwcli put <url> < -t/-u/-p > -c/--content type <content type> -b/--body <body>`
-- DELETE: `pwcli delete <url> < -t/-u/-p > -c/--content type <content type> -b/--body <body>`
+Example for a POST request: 
+`pwcli post https://reqres.in/api/users/2 -c js -b '{"name": "morp","job": "zion resident"}`
 
-**Content Types can be of**  
-`html` : `text/html`  
-`js` : `application/json`,  
-`xml` : `application/xml`  
-`plain` : `text/plain`,
-
-#### Extra
+### Extra
 
 **SEND**: This can be used to test multiple endpoints from the `postwoman-collection.json` file. The output will only be the `statuscode`.  
-RUN: `pwcli send <PATH to postwoman collection.json>`  
-OUTPUT:
+Example : `pwcli send <PATH to postwoman collection.json>`  
+o/p:
 ![](/assets/send.png)
+
+
+### There are 3 Authentication Flags
+*(optional)*        
+- `-t` or `--token` for a Bearer Token for Authentication
+- `-u` for the `Username` in Basic Auth
+- `-p` for the `password` in Basic Auth
+### There are 2 flags especially for the data management requests like POST,PUT,PATCH and DELETE
+- `-c` or `--ctype` for the *Content Type*
+
+- `-b` or `--body` for the Data Body, this can be of json, html or plain text based on the request. 
+  > Enclose the body in Single Quotes(\')
+
+**Content Types can be of**         
+`html` : `text/html`   
+`js` : `application/json`   
+`xml` : `application/xml`   
+`plain` : `text/plain`  
