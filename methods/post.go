@@ -14,9 +14,13 @@ func Postbasic(c *cli.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	var jsonStr = []byte(c.String("body"))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
-	//req.Header.Set("X-Custom-Header", "myvalue")
+	if err != nil {
+		return "", fmt.Errorf("Error creating request: %s", err.Error())
+	}
+
 	req.Header.Set("Content-Type", Contenttypes[c.String("ctype")])
 	fmt.Print(Contenttypes[c.String("ctype")] + "\n")
 	if c.String("token") != "" {
@@ -28,7 +32,7 @@ func Postbasic(c *cli.Context) (string, error) {
 		pw := c.String("p")
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	}
-	fmt.Print(req.Header)
+
 	client := getHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {

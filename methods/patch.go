@@ -12,11 +12,15 @@ import (
 func Patchbasic(c *cli.Context) (string, error) {
 	url, err := checkURL(c.Args().Get(0))
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("URL validation error: %s", err.Error())
 	}
+
 	var jsonStr = []byte(c.String("body"))
 	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(jsonStr))
-	//req.Header.Set("X-Custom-Header", "myvalue")
+	if err != nil {
+		return "", fmt.Errorf("Error creating request: %s", err.Error())
+	}
+
 	req.Header.Set("Content-Type", Contenttypes[c.String("ctype")])
 	if c.String("token") != "" {
 		var bearer = "Bearer " + c.String("token")
@@ -27,6 +31,7 @@ func Patchbasic(c *cli.Context) (string, error) {
 		pw := c.String("p")
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	}
+
 	client := getHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {

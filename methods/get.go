@@ -13,10 +13,12 @@ func Getbasic(c *cli.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
+
 	if c.String("token") != "" {
 		var bearer = "Bearer " + c.String("token")
 		req.Header.Add("Authorization", bearer)
@@ -26,6 +28,7 @@ func Getbasic(c *cli.Context) (string, error) {
 		pw := c.String("p")
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	}
+
 	client := getHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {

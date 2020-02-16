@@ -102,6 +102,7 @@ func getsend(c []Colls, ind int, method string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
+
 	if c[0].Request[ind].Token != "" {
 		var bearer = "Bearer " + c[0].Request[ind].Token
 		req.Header.Add("Authorization", bearer)
@@ -138,6 +139,7 @@ func sendpopa(c []Colls, ind int, method string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
+
 	req.Header.Set("Content-Type", c[0].Request[ind].Ctype)
 	if c[0].Request[ind].Token != "" {
 		var bearer = "Bearer " + c[0].Request[ind].Token
