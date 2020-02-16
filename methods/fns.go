@@ -23,10 +23,12 @@ func formatresp(resp *http.Response) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("Error reading response body: %s", err.Error())
 	}
+
 	for key, value := range resp.Header {
 		c.Print(key, " : ")
 		magenta.Print(value, "\n")
 	}
+
 	str := string(body)
 	if strings.Contains(heads, "json") {
 		retbody = color.HiYellowString("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode) + fmt.Sprintf("\n%s\n", string(pretty.Color(pretty.Pretty(body), nil)))
@@ -39,6 +41,7 @@ func formatresp(resp *http.Response) (string, error) {
 		}
 		retbody = color.HiYellowString("\nStatus:\t\t%s\n\nStatusCode:\t%d\n", resp.Status, resp.StatusCode) + fmt.Sprintf("\n%s\n", s)
 	}
+
 	return retbody, nil
 }
 
