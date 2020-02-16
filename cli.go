@@ -75,7 +75,7 @@ func main() {
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
 				var err error
-				out, err = mets.Postbasic(c)
+				out, err = mets.BasicRequestWithBody(c, "POST")
 				return err
 			},
 		},
@@ -85,7 +85,7 @@ func main() {
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
 				var err error
-				out, err = mets.Putbasic(c)
+				out, err = mets.BasicRequestWithBody(c, "PUT")
 				return err
 			},
 		},
@@ -95,7 +95,7 @@ func main() {
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
 				var err error
-				out, err = mets.Patchbasic(c)
+				out, err = mets.BasicRequestWithBody(c, "PATCH")
 				return err
 			},
 		},
@@ -105,7 +105,7 @@ func main() {
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
 				var err error
-				out, err = mets.Deletebasic(c)
+				out, err = mets.BasicRequestWithBody(c, "DELETE")
 				return err
 			},
 		},

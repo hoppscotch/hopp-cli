@@ -8,15 +8,15 @@ import (
 	"github.com/urfave/cli"
 )
 
-//Putbasic sends a basic PUT request
-func Putbasic(c *cli.Context) (string, error) {
+// BasicRequestWithBody sends put|patch|post|delete requests
+func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 	url, err := checkURL(c.Args().Get(0))
 	if err != nil {
 		return "", err
 	}
 
 	var jsonStr = []byte(c.String("body"))
-	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonStr))
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		return "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
