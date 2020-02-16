@@ -20,6 +20,8 @@ func main() {
 	app.Usage = color.HiYellowString("Test API endpoints without the hassle")
 	app.Description = color.HiBlueString("Made with <3 by Postwoman Team")
 
+	var out string
+
 	getFlags := []cli.Flag{
 		cli.StringFlag{
 			Name:  "token, t",
@@ -62,7 +64,9 @@ func main() {
 			Usage: "Send a GET request",
 			Flags: getFlags,
 			Action: func(c *cli.Context) error {
-				return mets.Getbasic(c)
+				var err error
+				out, err = mets.Getbasic(c)
+				return err
 			},
 		},
 		{
@@ -70,7 +74,9 @@ func main() {
 			Usage: "Send a POST Request",
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
-				return mets.Postbasic(c)
+				var err error
+				out, err = mets.BasicRequestWithBody(c, "POST")
+				return err
 			},
 		},
 		{
@@ -78,7 +84,9 @@ func main() {
 			Usage: "Send a PUT Request",
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
-				return mets.Putbasic(c)
+				var err error
+				out, err = mets.BasicRequestWithBody(c, "PUT")
+				return err
 			},
 		},
 		{
@@ -86,7 +94,9 @@ func main() {
 			Usage: "Send a PATCH Request",
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
-				return mets.Patchbasic(c)
+				var err error
+				out, err = mets.BasicRequestWithBody(c, "PATCH")
+				return err
 			},
 		},
 		{
@@ -94,14 +104,18 @@ func main() {
 			Usage: "Send a DELETE Request",
 			Flags: postFlags,
 			Action: func(c *cli.Context) error {
-				return mets.Deletebasic(c)
+				var err error
+				out, err = mets.BasicRequestWithBody(c, "DELETE")
+				return err
 			},
 		},
 		{
 			Name:  "send",
 			Usage: "Test all the Endpoints in the Postwoman Collection.json",
 			Action: func(c *cli.Context) error {
-				return mets.ReadCollection(c)
+				var err error
+				out, err = mets.ReadCollection(c)
+				return err
 			},
 		},
 	}
@@ -117,5 +131,7 @@ func main() {
 	if err != nil {
 		l := log.New(os.Stderr, "", 0)
 		l.Println(color.HiRedString("\n%s", err.Error()))
+		os.Exit(1)
 	}
+	fmt.Println(out)
 }

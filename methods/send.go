@@ -3,12 +3,14 @@ package methods
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/fatih/color"
 	"github.com/urfave/cli"
+	"go.uber.org/multierr"
 )
 
 //Colls hold the structure of the basic `postwoman-collection.json`
@@ -41,61 +43,66 @@ type Bpardata struct {
 }
 
 //ReadCollection reads the PostWoman Collection Json File and does the Magic Stuff
-func ReadCollection(c *cli.Context) error {
+func ReadCollection(c *cli.Context) (string, error) {
 	data, err := ioutil.ReadFile(c.Args().Get(0))
 	if string(data) == "" {
-		return fmt.Errorf("PATH is needed")
+		return "", errors.New("PATH is needed")
 	}
 	if err != nil {
-		return err
+		return "", err
 	}
+
 	var jsondat []Colls
 	err = json.Unmarshal([]byte(data), &jsondat)
 	if err != nil {
-		return fmt.Errorf("Error parsing JSON: %s", err.Error())
+		return "", fmt.Errorf("Error parsing JSON: %s", err.Error())
 	}
-	fmt.Println("Name:\t" + color.HiMagentaString(jsondat[0].Name))
+
+	var errs error
+	out := fmt.Sprintf("Name:\t%s\n", color.HiMagentaString(jsondat[0].Name))
+
 	for i := 0; i < len(jsondat[0].Request); i++ {
-		err := request(jsondat, i)
+		tmpOut, err := request(jsondat, i)
 		if err != nil {
-			return err
+			errs = multierr.Append(errs, err)
 		}
+		out += tmpOut
 	}
-	return nil
+
+	return out, errs
 }
-func request(c []Colls, i int) error {
+
+func request(c []Colls, i int) (string, error) {
 	colors := color.New(color.FgHiRed, color.Bold)
 	fURL := colors.Sprintf(c[0].Request[i].URL + c[0].Request[i].Path)
-	// if err != nil {
-	// 	fmt.Printf("%s\n", err.Error())
-	// 	return nil
-	//}
+
+	var out string
+	var err error
+
 	if c[0].Request[i].Method == "GET" {
-		out, err := getsend(c, i, "GET")
-		if err != nil {
-			return err
-		}
-		methods := color.HiYellowString(c[0].Request[i].Method)
-		fmt.Printf("%s |\t%s |\t%s |\t%s", color.HiGreenString(c[0].Request[i].Name), fURL, methods, out)
+		out, err = getsend(c, i, "GET")
 	} else {
-		out, err := sendpopa(c, i, c[0].Request[i].Method)
-		if err != nil {
-			return err
-		}
-		methods := color.HiYellowString(c[0].Request[i].Method)
-		fURL := colors.Sprintf(c[0].Request[i].URL + c[0].Request[i].Path)
-		fmt.Printf("%s |\t%s |\t%s |\t%s", color.HiGreenString(c[0].Request[i].Name), fURL, methods, out)
+		out, err = sendpopa(c, i, c[0].Request[i].Method)
 	}
-	return nil
+	if err != nil {
+		return "", err
+	}
+
+	methods := color.HiYellowString(c[0].Request[i].Method)
+	result := fmt.Sprintf("%s |\t%s |\t%s |\t%s\n", color.HiGreenString(c[0].Request[i].Name), fURL, methods, out)
+
+	return result, nil
 }
+
 func getsend(c []Colls, ind int, method string) (string, error) {
 	color := color.New(color.FgCyan, color.Bold)
 	var url = c[0].Request[ind].URL + c[0].Request[ind].Path
-	//fmt.Print(url + "  ")
+
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
+
 	if c[0].Request[ind].Token != "" {
 		var bearer = "Bearer " + c[0].Request[ind].Token
 		req.Header.Add("Authorization", bearer)
@@ -105,13 +112,14 @@ func getsend(c []Colls, ind int, method string) (string, error) {
 		pw := c[0].Request[ind].Pass
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	}
-	client := &http.Client{}
+
+	client := getHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("Error sending request: %s", err.Error())
 	}
 	defer resp.Body.Close()
-	//fmt.Print(resp.Header)
+
 	s := color.Sprintf("Status: %s\tStatusCode:\t%d\n", resp.Status, resp.StatusCode)
 	return s, nil
 }
@@ -120,6 +128,7 @@ func sendpopa(c []Colls, ind int, method string) (string, error) {
 	color := color.New(color.FgCyan, color.Bold)
 	var jsonStr []byte
 	var url = c[0].Request[ind].URL + c[0].Request[ind].Path
+
 	if len(c[0].Request[ind].Bparams) > 0 {
 		jsonStr = []byte(string(c[0].Request[ind].Bparams[0].Key[0] + c[0].Request[ind].Bparams[0].Value[0]))
 	} else {
@@ -130,6 +139,7 @@ func sendpopa(c []Colls, ind int, method string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
+
 	req.Header.Set("Content-Type", c[0].Request[ind].Ctype)
 	if c[0].Request[ind].Token != "" {
 		var bearer = "Bearer " + c[0].Request[ind].Token
@@ -140,14 +150,14 @@ func sendpopa(c []Colls, ind int, method string) (string, error) {
 		pw := c[0].Request[ind].Pass
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	}
-	client := &http.Client{}
+
+	client := getHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("Error sending request: %s", err.Error())
 	}
 	defer resp.Body.Close()
-	//fmt.Print(resp.Header)
+
 	s := color.Sprintf("Status: %s\tStatusCode:\t%d\n", resp.Status, resp.StatusCode)
 	return s, nil
-
 }

@@ -8,15 +8,17 @@ import (
 )
 
 //Getbasic sends a simple GET request to the url with any potential parameters like Tokens or Basic Auth
-func Getbasic(c *cli.Context) error {
+func Getbasic(c *cli.Context) (string, error) {
 	var url, err = checkURL(c.Args().Get(0))
 	if err != nil {
-		return err
+		return "", err
 	}
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return fmt.Errorf("Error creating request: %s", err.Error())
+		return "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
+
 	if c.String("token") != "" {
 		var bearer = "Bearer " + c.String("token")
 		req.Header.Add("Authorization", bearer)
@@ -26,18 +28,13 @@ func Getbasic(c *cli.Context) error {
 		pw := c.String("p")
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	}
-	client := &http.Client{}
+
+	client := getHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("Error sending request: %s", err.Error())
+		return "", fmt.Errorf("Error sending request: %s", err.Error())
 	}
 	defer resp.Body.Close()
 
-	s, err := formatresp(resp)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(s)
-	return nil
+	return formatresp(resp)
 }

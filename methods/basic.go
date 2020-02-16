@@ -8,15 +8,19 @@ import (
 	"github.com/urfave/cli"
 )
 
-//Putbasic sends a basic PUT request
-func Putbasic(c *cli.Context) error {
+// BasicRequestWithBody sends put|patch|post|delete requests
+func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 	url, err := checkURL(c.Args().Get(0))
 	if err != nil {
-		return err
+		return "", err
 	}
+
 	var jsonStr = []byte(c.String("body"))
-	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonStr))
-	//req.Header.Set("X-Custom-Header", "myvalue")
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		return "", fmt.Errorf("Error creating request: %s", err.Error())
+	}
+
 	req.Header.Set("Content-Type", Contenttypes[c.String("ctype")])
 	if c.String("token") != "" {
 		var bearer = "Bearer " + c.String("token")
@@ -27,18 +31,13 @@ func Putbasic(c *cli.Context) error {
 		pw := c.String("p")
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	}
-	client := &http.Client{}
+
+	client := getHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("Error sending request: %s", err.Error())
+		return "", fmt.Errorf("Error sending request: %s", err.Error())
 	}
 	defer resp.Body.Close()
 
-	s, err := formatresp(resp)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(s)
-	return nil
+	return formatresp(resp)
 }
