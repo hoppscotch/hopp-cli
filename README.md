@@ -1,4 +1,4 @@
-# PostWoman CLI  [![Postwoman](https://img.shields.io/badge/Made_for-Postwoman-hex_color_code?logo=Postwoman)](https://postwoman.io) [![Go Report Card](https://goreportcard.com/badge/github.com/athul/pwcli)](https://goreportcard.com/report/github.com/athul/pwcli)
+# Hoppscotch CLI [![hoppscotch](https://img.shields.io/badge/Made_for-Hoppscotch-hex_color_code?logo=Postwoman)](https://hoppscotch.io)  [![Go Report Card](https://goreportcard.com/badge/github.com/athul/pwcli)](https://goreportcard.com/report/github.com/athul/pwcli)
 
 Send HTTP requests from terminal. An alternative to cURL, httpie ⚡️
 
@@ -55,8 +55,8 @@ Example for a POST request:
 
 ### Extra
 
-**SEND**: This can be used to test multiple endpoints from the `postwoman-collection.json` file. The output will only be the `statuscode`.  
-Example : `pwcli send <PATH to postwoman collection.json>`  
+**SEND**: This can be used to test multiple endpoints from the `hoppscotch-collection.json` file. The output will only be the `statuscode`.  
+Example : `pwcli send <PATH to hoppscotch collection.json>`  
 o/p:
 ![](/assets/send.png)
 
