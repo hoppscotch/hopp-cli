@@ -1,4 +1,4 @@
-# hoppscotch CLI  [![hoppscotch](https://img.shields.io/badge/Made_for-Postwoman-hex_color_code?logo=Postwoman)](https://hoppscotch.io) [![Go Report Card](https://goreportcard.com/badge/github.com/athul/pwcli)](https://goreportcard.com/report/github.com/athul/pwcli)
+# Hoppscotch CLI [![hoppscotch](https://img.shields.io/badge/Made_for-Hoppscotch-hex_color_code?logo=Postwoman)](https://hoppscotch.io)  [![Go Report Card](https://goreportcard.com/badge/github.com/athul/pwcli)](https://goreportcard.com/report/github.com/athul/pwcli)
 
 Send HTTP requests from terminal. An alternative to cURL, httpie ⚡️
 
