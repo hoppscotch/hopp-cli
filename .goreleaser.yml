@@ -38,14 +38,14 @@ changelog:
       - '^test:'
 release:
   github:
-    owner: athul
-    name: pwcli
+    owner: hoppscotch
+    name: hopp-cli
 brews:
-  - name: pwcli
+  - name: hopp-cli
     github:
       owner: athul
       name: homebrew-tap
     folder: Formula
-    homepage: 'https://github.com/athul/pwcli'
-    description: 'Postwoman CLI in Go'
-    install: bin.install "pwcli"
+    homepage: 'https://github.com/hoppscotch/hopp-cli'
+    description: 'CLI for Hoppscotch.io'
+    install: bin.install "hopp-cli"

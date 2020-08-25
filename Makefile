@@ -3,9 +3,9 @@ BINDIR?=$(PREFIX)/bin
 VERSION?=$(shell git tag | grep ^v | sort -V | tail -n 1)
 GOFLAGS?=-ldflags '-X main.VERSION=${VERSION}'
 
-pwcli: cli.go go.mod go.sum
+hopp-cli: cli.go go.mod go.sum
 	@echo
-	@echo Building pwcli. This may take a minute or two.
+	@echo Building hopp-cli. This may take a minute or two.
 	@echo
 	go build $(GOFLAGS) -o $@
 	@echo
@@ -32,17 +32,17 @@ update:
 .PHONY: install
 install:
 	@echo
-	@echo Installing pwcli...
+	@echo Installing hopp-cli...
 	@echo
-	install -m755 pwcli $(BINDIR)
+	install -m755 hopp-cli $(BINDIR)
 	@echo
 	@echo ...Done\!
 
 .PHONY: uninstall
 uninstall:
 	@echo
-	@echo Uninstalling pwcli...
+	@echo Uninstalling hopp-cli...
 	@echo
-	rm -f $(BINDIR)/pwcli
+	rm -f $(BINDIR)/hopp-cli
 	@echo
 	@echo ...Done\!

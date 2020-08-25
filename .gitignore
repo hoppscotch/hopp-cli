@@ -9,7 +9,7 @@
 *.dll
 *.so
 *.dylib
-pwcli
+hopp-cli
 
 # Test binary, built with `go test -c`
 *.test
