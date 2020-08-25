@@ -123,7 +123,7 @@ func main() {
 
 	WE REALLY NEED YOUR FEEDBACK, 
 
-	CREATE A NEW ISSUE FOR BUGS AND FEATURE REQUESTS : < http://github.com/athul/pwcli >
+	CREATE A NEW ISSUE FOR BUGS AND FEATURE REQUESTS : < https://github.com/hoppscotch/hopp-cli >
 	
 	`, cli.AppHelpTemplate)
 
