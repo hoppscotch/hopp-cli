@@ -15,7 +15,7 @@ $ sh -c "$(curl -sL https://git.io/getpwcli)"
 - Clone the repo
 
 ```
-$ git clone https://github.com/athul/pwcli
+$ git clone https://github.com/hoppscotch/hopp-cli.git
 ```
 
 - Build and install
@@ -36,7 +36,7 @@ $ sudo make install
 
 ### Homebrew
 
-Install by `brew install athul/tap/pwcli`
+Install by `brew install athul/tap/hopp-cli`
 
 > **IMPORTANT: Not tested on Windows, please leave your feedback/bugs in the Issues section**
 
@@ -44,19 +44,19 @@ Install by `brew install athul/tap/pwcli`
 
 Putting Simply: **Just pass the URL to the request method**
 ## Basic
-- GET : `pwcli get <url> `
-- POST: `pwcli post <url> `
-- PATCH: `pwcli patch <url>`
-- PUT : `pwcli put <url>`
-- DELETE: `pwcli delete <url>`
+- GET : `hopp-cli get <url> `
+- POST: `hopp-cli post <url> `
+- PATCH: `hopp-cli patch <url>`
+- PUT : `hopp-cli put <url>`
+- DELETE: `hopp-cli delete <url>`
 
 Example for a POST request: 
-`pwcli post https://reqres.in/api/users/2 -c js -b '{"name": "morp","job": "zion resident"}`
+`hopp-cli post https://reqres.in/api/users/2 -c js -b '{"name": "morp","job": "zion resident"}`
 
 ### Extra
 
 **SEND**: This can be used to test multiple endpoints from the `hoppscotch-collection.json` file. The output will only be the `statuscode`.  
-Example : `pwcli send <PATH to hoppscotch collection.json>`  
+Example : `hopp-cli send <PATH to hoppscotch collection.json>`  
 o/p:
 ![](/assets/send.png)
 
