@@ -15,7 +15,7 @@ $ sh -c "$(curl -sL https://git.io/getpwcli)"
 - Clone the repo
 
 ```
-$ git clone https://github.com/athul/pwcli
+$ git clone https://github.com/hoppscotch/hopp-cli.git
 ```
 
 - Build and install
