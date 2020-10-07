@@ -15,10 +15,10 @@ var VERSION = ""
 
 func main() {
 	app := cli.NewApp()
-	app.Name = color.HiGreenString("Postwoman CLI")
+	app.Name = color.HiGreenString("Hoppscotch CLI")
 	app.Version = color.HiRedString(VERSION)
 	app.Usage = color.HiYellowString("Test API endpoints without the hassle")
-	app.Description = color.HiBlueString("Made with <3 by Postwoman Team")
+	app.Description = color.HiBlueString("Made with <3 by Hoppscotch Team")
 
 	var out string
 
@@ -111,7 +111,7 @@ func main() {
 		},
 		{
 			Name:  "send",
-			Usage: "Test all the Endpoints in the Postwoman Collection.json",
+			Usage: "Test all the Endpoints in the Hoppscotch Collection.json",
 			Action: func(c *cli.Context) error {
 				var err error
 				out, err = mets.ReadCollection(c)
