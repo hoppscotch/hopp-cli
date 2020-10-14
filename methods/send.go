@@ -40,7 +40,9 @@ func ProcessCollection(jsonArr []Collection) (string, error) {
 	for _, jsondat := range jsonArr {
 		fmt.Printf("\n------------\nName:\t%s\n", color.HiMagentaString(jsondat.Name))
 		if len(jsondat.Folders) > 0 {
-			jsondat.getDatafromFolders()
+			if err := jsondat.getDatafromFolders(); err != nil {
+				return "", err
+			}
 		} else {
 			request := jsondat.Requests
 			for _, req := range request {
