@@ -6,228 +6,221 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/urfave/cli"
 	"go.uber.org/multierr"
 )
 
-//Colls hold the structure of the basic `postwoman-collection.json`
-type Colls struct {
-	Name    string     `json:"name"`
-	Folders []Folders  `json:"folders"`
-	Request []Requests `json:"requests"`
-}
-type Folders struct {
-	Name     string     `json:"name"`
-	Requests []Requests `json:"requests"`
-}
-type Headers struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
-}
-type Requests struct {
-	URL               string        `json:"url"`
-	Path              string        `json:"path"`
-	Method            string        `json:"method"`
-	Auth              string        `json:"auth"`
-	User              string        `json:"httpUser"`
-	Pass              string        `json:"httpPassword"`
-	PasswordFieldType string        `json:"passwordFieldType"`
-	Token             string        `json:"bearerToken"`
-	Headers           []Headers     `json:"headers"`
-	Params            []interface{} `json:"params"`
-	Bparams           []interface{} `json:"bodyParams"`
-	RawParams         string        `json:"rawParams"`
-	RawInput          bool          `json:"rawInput"`
-	Ctype             string        `json:"contentType"`
-	RequestType       string        `json:"requestType"`
-	PreRequestScript  string        `json:"preRequestScript"`
-	TestScript        string        `json:"testScript"`
-	Label             string        `json:"label"`
-	Name              string        `json:"name"`
-	Collection        int           `json:"collection"`
-}
-type BodyParams struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
-}
-
-//ReadCollection reads the PostWoman Collection Json File and does the Magic Stuff
-func ReadCollection(c *cli.Context) (string, error) {
-	data, err := ioutil.ReadFile(c.Args().Get(0))
+//ReadCollection reads the `hoppScotch-collection.json` File and returns a the Loaded Collection Struct
+func ReadCollection(filename string) ([]Collection, error) {
+	data, err := ioutil.ReadFile(filename)
 	if string(data) == "" {
-		return "", errors.New("PATH is needed")
+		return nil, errors.New("PATH is needed")
 	}
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	var jsonArr []Colls
-	var errs error
-	var out string
-	err = json.Unmarshal([]byte(data), &jsonArr)
+	var jsonArr []Collection
+	err = json.Unmarshal([]byte(data), &jsonArr) // Unmarshal JSON to Collection Type
 	if err != nil {
-		return "", fmt.Errorf("Error parsing JSON: %s", err.Error())
+		return nil, fmt.Errorf("Error parsing JSON: %s", err.Error())
 	}
-	for i, jsondat := range jsonArr {
-		var request []Requests
-		out := fmt.Sprintf("Name:\t%s\n", color.HiMagentaString(jsondat.Name))
+	return jsonArr, nil
+}
+
+// ProcessCollection parses the Collection struct and execute the said requests
+func ProcessCollection(jsonArr []Collection) (string, error) {
+	var (
+		out  string
+		errs error
+	)
+	for _, jsondat := range jsonArr {
+		fmt.Printf("\n------------\nName:\t%s\n", color.HiMagentaString(jsondat.Name))
 		if len(jsondat.Folders) > 0 {
-			for j := range jsondat.Folders[i].Requests {
-				tmpOut, err := jsondat.request(i, true)
-				if err != nil {
-					errs = multierr.Append(errs, err)
-				}
-				out += tmpOut
-				log.Println(jsondat.Folders[i].Requests[j])
-
-			}
+			jsondat.getDatafromFolders()
 		} else {
-			request = jsondat.Request
-			// jsondat := jsonArr[i]
-
-			for i := range request {
-				log.Println(request[i].Name)
-				tmpOut, err := jsondat.request(i, false)
+			request := jsondat.Requests
+			for _, req := range request {
+				err := jsondat.request(req)
 				if err != nil {
 					errs = multierr.Append(errs, err)
 				}
-				out += tmpOut
 			}
 		}
 	}
-	log.Println(out)
 	return out, errs
 }
 
-func (c *Colls) request(i int, folders bool) (string, error) {
-
+// request process the Requests type and executes the Requests synchronously
+func (c *Collection) request(req Requests) error {
 	var (
-		colors = color.New(color.FgHiRed, color.Bold)
-		fURL   string
-		method string
-		out    string
-		err    error
+		colored       = color.New(color.FgHiRed, color.Bold) // Red string color
+		fURL          = req.URL + req.Path                   // Full URL
+		err           error
+		out, paramURL string
 	)
-	if folders {
-		for j := range c.Folders[i].Requests {
-			fURL = colors.Sprintf(c.Folders[i].Requests[j].URL + c.Folders[i].Requests[j].Path)
-			method = c.Folders[i].Requests[j].Method
-		}
-	} else {
-		fURL = colors.Sprintf(c.Request[i].URL + c.Request[i].Path)
-	}
 
-	if method == "GET" {
-		out, err = c.getsend(i, "GET")
+	if req.Method == "GET" {
+		out, paramURL, err = c.sendGET(req)
 	} else {
-		out, err = c.sendpopa(i, method)
+		out, err = c.sendPOST(req, req.Method)
 	}
 	if err != nil {
-		return "", err
+		return err
+	}
+	if paramURL != "" {
+		fmt.Printf("%s |\t%s | %s |\t%s\n", color.HiGreenString(req.Name), colored.Sprintf(paramURL), color.HiYellowString(req.Method), out)
+	} else {
+		fmt.Printf("%s |\t%s | %s |\t%s\n", color.HiGreenString(req.Name), colored.Sprintf(fURL), color.HiYellowString(req.Method), out)
 	}
 
-	methods := color.HiYellowString(c.Request[i].Method)
-	result := fmt.Sprintf("%s |\t%s |\t%s |\t%s\n", color.HiGreenString(c.Request[i].Name), fURL, methods, out)
-
-	return result, nil
+	return nil
 }
 
-func (c *Colls) getsend(ind int, method string) (string, error) {
+// sendGet sends a GET request to the said URL and returns a Response string and if it contains a
+// params in the URL
+func (c *Collection) sendGET(req Requests) (string, string, error) {
 	var (
-		color  = color.New(color.FgCyan, color.Bold)
-		url    = c.Request[ind].URL + c.Request[ind].Path
-		bearer string
+		url      = req.URL + req.Path
+		bearer   string
+		paramstr string = "?"
 	)
+	if len(req.Params) > 0 {
+		for _, param := range req.Params {
+			if k, v := param.(map[string]interface{}); v {
+				if k["type"] == "query" {
+					paramstr += fmt.Sprintf("%v=%v&", k["key"], k["value"])
+				}
 
-	req, err := http.NewRequest(method, url, nil)
+			}
+		}
+		paramstr = strings.TrimSuffix(paramstr, "&") // Trim any `&` from the Params
+		url += paramstr
+	}
+	reqHTTP, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return "", fmt.Errorf("Error creating request: %s", err.Error())
+		return "", "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
 
-	if c.Request[ind].Token != "" {
-		bearer = "Bearer " + c.Request[ind].Token
-		req.Header.Add("Authorization", bearer)
+	if req.Token != "" {
+		// Token Auth
+		bearer = "Bearer " + req.Token
+		reqHTTP.Header.Add("Authorization", bearer)
 	}
-	if c.Request[ind].User != "" && c.Request[ind].Pass != "" {
-		un := c.Request[ind].User
-		pw := c.Request[ind].Pass
-		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
+	if req.User != "" && req.Pass != "" {
+		// Basic Auth
+		// basicAuth function encodes the username-password combo to base64 encoded string
+		reqHTTP.Header.Add("Authorization", "Basic "+basicAuth(req.User, req.Pass))
 	}
 
 	client := getHTTPClient()
-	resp, err := client.Do(req)
+	resp, err := client.Do(reqHTTP)
 	if err != nil {
-		return "", fmt.Errorf("Error sending request: %s", err.Error())
+		return "", "", fmt.Errorf("Error sending request: %s", err.Error())
 	}
 	defer resp.Body.Close()
-
-	s := color.Sprintf("Status: %s\tStatusCode:\t%d\n", resp.Status, resp.StatusCode)
-	return s, nil
+	// paramstr is suffixed with a `?` to append to the URL
+	if paramstr != "?" {
+		s := fmt.Sprintf("Status: %s\tStatusCode:\t%s \n", color.HiBlueString(resp.Status), color.New(color.FgHiBlue).Sprintln(resp.StatusCode))
+		return s, url, nil
+	}
+	s := fmt.Sprintf("Status: %s\tStatusCode:\t%s\n", color.HiBlueString(resp.Status), color.New(color.FgHiBlue).Sprintln(resp.StatusCode))
+	return s, "", nil
 }
 
-func (c *Colls) sendpopa(ind int, method string) (string, error) {
+// sendPOST sends all request other than GET requests since
+// it's the only one which has BodyParams and RawParams
+func (c *Collection) sendPOST(req Requests, method string) (string, error) {
 
 	var (
-		color   = color.New(color.FgCyan, color.Bold)
+		// colorcy = color.New(color.FgCyan, color.Bold)
 		jsonStr []byte
-		url     = c.Request[ind].URL + c.Request[ind].Path
-		reqData = c.Request[ind]
+		url     = req.URL + req.Path
+		reqData = req
 		Bpar    = reqData.Bparams
 	)
 	switch {
 	case reqData.RawInput:
+		// Check if RawInput is enabled and convert it to bytes
 		jsonStr = []byte(reqData.RawParams)
 	case len(Bpar) > 0:
 		// var dataAsJSON string
 		for _, s := range Bpar {
+			// Since bodyParams is a map[string]interface{}
+			// had to loop over them and get the values
 			if k, v := s.(map[string]interface{}); v {
-				log.Println(k["key"], k["value"])
+				// Update jsonStr with data from BodyParams.
 				jsonStr = append(jsonStr, fmt.Sprintf("\"%s\":\"%v\",", k["key"], k["value"])...)
 			}
 		}
-		dataAsJSON := strings.TrimSuffix(string(jsonStr), ",")
-		jsonStr = []byte(fmt.Sprintf("{%s}", dataAsJSON))
-		// log.Println(string(jsonStr))
+		dataAsJSON := strings.TrimSuffix(string(jsonStr), ",") // Removes any trailing commas from the Input
+		jsonStr = []byte(fmt.Sprintf("{%s}", dataAsJSON))      // Appends a `{` and `}` to front and last of jsonStr to make it a json-like string
 	}
 
-	// log.Println(string(jsonStr))
-	finalBytes, err := json.RawMessage(jsonStr).MarshalJSON()
+	finalBytes, err := json.RawMessage(jsonStr).MarshalJSON() // Marshal to JSON from strings
 	if err != nil {
 		return "", fmt.Errorf("Error Marhsaling JSON: %s", err.Error())
 	}
-	req, err := http.NewRequest(method, url, bytes.NewBuffer(finalBytes))
+	reqHTTP, err := http.NewRequest(method, url, bytes.NewBuffer(finalBytes))
 	if err != nil {
 		return "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
 
-	req.Header.Set("Content-Type", c.Request[ind].Ctype)
-	if c.Request[ind].Token != "" {
-		var bearer = "Bearer " + c.Request[ind].Token
-		req.Header.Add("Authorization", bearer)
+	reqHTTP.Header.Set("Content-Type", req.Ctype) // Set Content type to said Ctype in Collection
+	if req.Token != "" {
+		// Bearer Auth / Token based Auth
+		var bearer = "Bearer " + req.Token
+		reqHTTP.Header.Add("Authorization", bearer)
 	}
-	if c.Request[ind].User != "" && c.Request[ind].Pass != "" {
-		un := c.Request[ind].User
-		pw := c.Request[ind].Pass
-		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
+	if req.User != "" && req.Pass != "" {
+		// Basic Auth
+		un := req.User
+		pw := req.Pass
+		reqHTTP.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
 	}
 
 	client := getHTTPClient()
-	resp, err := client.Do(req)
+	resp, err := client.Do(reqHTTP)
 	if err != nil {
 		return "", fmt.Errorf("Error sending request: %s", err.Error())
 	}
-	text, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
+
 	defer resp.Body.Close()
 
-	s := color.Sprintf("Status: %s\tStatusCode:\t%d\n", resp.Status, resp.StatusCode)
-	log.Println(s, string(text))
+	s := fmt.Sprintf("Status: %s\tStatusCode:\t%s\n", color.HiBlueString(resp.Status), color.New(color.FgHiBlue).Sprintln(resp.StatusCode))
 	return s, nil
+}
+
+// getDatafromFolders handle edge cases when requests are saved inside folders
+// from hoppscotch itself
+// This adds another loop to check for folders and requests
+func (c *Collection) getDatafromFolders() error {
+	var (
+		err           error
+		out, paramURL string
+	)
+	for _, Folder := range c.Folders {
+		for j := range Folder.Requests {
+			fmt.Printf("Folder Name:\t%s\n", color.HiMagentaString(Folder.Name))
+			fURL := fmt.Sprintf(Folder.Requests[j].URL + Folder.Requests[j].Path)
+			method := Folder.Requests[j].Method
+			if method == "GET" {
+				out, paramURL, err = c.sendGET(Folder.Requests[j])
+			} else {
+				out, err = c.sendPOST(Folder.Requests[j], method)
+			}
+			if err != nil {
+				return err
+			}
+			if paramURL != "" {
+				fmt.Printf("%s |\t%s | %s |\t%s\n", color.HiGreenString(Folder.Requests[j].Name), color.HiRedString(paramURL), color.HiYellowString(method), out)
+			} else {
+				fmt.Printf("%s |\t%s | %s |\t%s\n", color.HiGreenString(Folder.Requests[j].Name), color.HiRedString(fURL), color.HiYellowString(method), out)
+			}
+		}
+	}
+	return nil
 }

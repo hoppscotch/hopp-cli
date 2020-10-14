@@ -113,9 +113,15 @@ func main() {
 			Name:  "send",
 			Usage: "Test all the Endpoints in the Hoppscotch Collection.json",
 			Action: func(c *cli.Context) error {
-				var err error
-				out, err = mets.ReadCollection(c)
-				return err
+				coll, err := mets.ReadCollection(c.Args().Get(0))
+				if err != nil {
+					return err
+				}
+				_, err = mets.ProcessCollection(coll)
+				if err != nil {
+					return err
+				}
+				return nil
 			},
 		},
 	}
