@@ -50,7 +50,7 @@ func basicAuth(username, password string) string {
 	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
 
-//Contenttypes can be used in Place for ctypes
+//Contenttypes are used in Place for ctypes for sending requests
 var Contenttypes = map[string]string{
 	"html":  "text/html",
 	"js":    "application/json",
