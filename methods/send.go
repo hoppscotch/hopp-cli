@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -41,7 +42,7 @@ func ProcessCollection(jsonArr []Collection) (string, error) {
 		tabData [][]string
 	)
 	for _, jsondat := range jsonArr {
-		fmt.Printf("------------\nName:\t%s\n", color.HiMagentaString(jsondat.Name))
+		fmt.Printf("\nName:\t%s\n", color.HiMagentaString(jsondat.Name))
 		if len(jsondat.Folders) > 0 {
 			if err := jsondat.getDatafromFolders(); err != nil {
 				return "", err
@@ -81,13 +82,10 @@ func (c *Collection) request(req Requests) ([]string, error) {
 		return nil, err
 	}
 	if paramURL != "" {
-		// fmt.Printf("%s |\t%s | %s |\t%s\n", color.HiGreenString(req.Name), colored.Sprintf(paramURL), color.HiYellowString(req.Method), out)
 		tabData = []string{color.HiGreenString(req.Name), colored.Sprintf(paramURL), color.HiYellowString(req.Method), status, code}
 	} else {
-		// fmt.Printf("%s |\t%s | %s |\t%s\n", color.HiGreenString(req.Name), colored.Sprintf(fURL), color.HiYellowString(req.Method), out)
 		tabData = []string{color.HiGreenString(req.Name), colored.Sprintf(fURL), color.HiYellowString(req.Method), status, code}
 	}
-
 	return tabData, nil
 }
 
@@ -154,7 +152,6 @@ func (c *Collection) sendGET(req Requests) (string, string, string, error) {
 func (c *Collection) sendPOST(req Requests, method string) (string, string, error) {
 
 	var (
-		// colorcy = color.New(color.FgCyan, color.Bold)
 		jsonStr []byte
 		url     = req.URL + req.Path
 		reqData = req
@@ -200,9 +197,7 @@ func (c *Collection) sendPOST(req Requests, method string) (string, string, erro
 	}
 	if req.User != "" && req.Pass != "" {
 		// Basic Auth
-		un := req.User
-		pw := req.Pass
-		reqHTTP.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
+		reqHTTP.Header.Add("Authorization", "Basic "+basicAuth(req.User, req.Pass))
 	}
 
 	client := getHTTPClient()
@@ -228,27 +223,24 @@ func (c *Collection) getDatafromFolders() error {
 		tabData                [][]string
 	)
 	for _, Folder := range c.Folders {
-		for j := range Folder.Requests {
-			fURL := fmt.Sprintf(Folder.Requests[j].URL + Folder.Requests[j].Path)
-			method := Folder.Requests[j].Method
+		for _, fRequest := range Folder.Requests {
+			fURL := fmt.Sprintf(fRequest.URL + fRequest.Path)
+			method := fRequest.Method
 			if method == "GET" {
-				status, code, paramURL, err = c.sendGET(Folder.Requests[j])
+				status, code, paramURL, err = c.sendGET(fRequest)
 			} else {
-				status, code, err = c.sendPOST(Folder.Requests[j], method)
+				status, code, err = c.sendPOST(fRequest, method)
 			}
 			if err != nil {
-				return err
+				log.Println(err)
 			}
 			if paramURL != "" {
-				// fmt.Printf("%s |\t%s | %s |\t%s\n", color.HiGreenString(Folder.Requests[j].Name), color.HiRedString(paramURL), color.HiYellowString(method), out)
-				tabData = append(tabData, []string{color.HiGreenString(Folder.Requests[j].Name), color.HiRedString(paramURL), color.HiYellowString(method), status, code})
+				tabData = append(tabData, []string{color.HiGreenString(fRequest.Name), color.HiRedString(paramURL), color.HiYellowString(method), status, code})
 			} else {
-				// fmt.Printf("%s |\t%s | %s |\t%s\n", color.HiGreenString(Folder.Requests[j].Name), color.HiRedString(fURL), color.HiYellowString(method), out)
-				tabData = append(tabData, []string{color.HiGreenString(Folder.Requests[j].Name), color.HiRedString(fURL), color.HiYellowString(method), status, code})
+				tabData = append(tabData, []string{color.HiGreenString(fRequest.Name), color.HiRedString(fURL), color.HiYellowString(method), status, code})
 			}
 		}
 	}
-	// log.Println(tabData)
 	genTables(tabData)
 	return nil
 }
