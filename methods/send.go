@@ -6,10 +6,13 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/olekukonko/tablewriter"
 	"go.uber.org/multierr"
 )
 
@@ -34,11 +37,12 @@ func ReadCollection(filename string) ([]Collection, error) {
 // ProcessCollection parses the Collection struct and execute the said requests
 func ProcessCollection(jsonArr []Collection) (string, error) {
 	var (
-		out  string
-		errs error
+		out     string
+		errs    error
+		tabData [][]string
 	)
 	for _, jsondat := range jsonArr {
-		fmt.Printf("\n------------\nName:\t%s\n", color.HiMagentaString(jsondat.Name))
+		fmt.Printf("\nName:\t%s\n", color.HiMagentaString(jsondat.Name))
 		if len(jsondat.Folders) > 0 {
 			if err := jsondat.getDatafromFolders(); err != nil {
 				return "", err
@@ -46,45 +50,48 @@ func ProcessCollection(jsonArr []Collection) (string, error) {
 		} else {
 			request := jsondat.Requests
 			for _, req := range request {
-				err := jsondat.request(req)
+
+				tabdata, err := jsondat.request(req)
+				tabData = append(tabData, tabdata)
 				if err != nil {
 					errs = multierr.Append(errs, err)
 				}
 			}
+			genTables(tabData)
 		}
 	}
 	return out, errs
 }
 
 // request process the Requests type and executes the Requests synchronously
-func (c *Collection) request(req Requests) error {
+func (c *Collection) request(req Requests) ([]string, error) {
 	var (
-		colored       = color.New(color.FgHiRed, color.Bold) // Red string color
-		fURL          = req.URL + req.Path                   // Full URL
-		err           error
-		out, paramURL string
+		colored                = color.New(color.FgHiRed, color.Bold) // Red string color
+		fURL                   = req.URL + req.Path                   // Full URL
+		err                    error
+		paramURL, status, code string
+		tabData                []string
 	)
 
 	if req.Method == "GET" {
-		out, paramURL, err = c.sendGET(req)
+		status, code, paramURL, err = c.sendGET(req)
 	} else {
-		out, err = c.sendPOST(req, req.Method)
+		status, code, err = c.sendPOST(req, req.Method)
 	}
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if paramURL != "" {
-		fmt.Printf("%s |\t%s | %s |\t%s\n", color.HiGreenString(req.Name), colored.Sprintf(paramURL), color.HiYellowString(req.Method), out)
+		tabData = []string{color.HiGreenString(req.Name), colored.Sprintf(paramURL), color.HiYellowString(req.Method), status, code}
 	} else {
-		fmt.Printf("%s |\t%s | %s |\t%s\n", color.HiGreenString(req.Name), colored.Sprintf(fURL), color.HiYellowString(req.Method), out)
+		tabData = []string{color.HiGreenString(req.Name), colored.Sprintf(fURL), color.HiYellowString(req.Method), status, code}
 	}
-
-	return nil
+	return tabData, nil
 }
 
 // sendGet sends a GET request to the said URL and returns a Response string and if it contains a
 // params in the URL
-func (c *Collection) sendGET(req Requests) (string, string, error) {
+func (c *Collection) sendGET(req Requests) (string, string, string, error) {
 	var (
 		url      = req.URL + req.Path
 		bearer   string
@@ -103,8 +110,13 @@ func (c *Collection) sendGET(req Requests) (string, string, error) {
 		url += paramstr
 	}
 	reqHTTP, err := http.NewRequest("GET", url, nil)
+	if len(req.Headers) > 0 {
+		for _, head := range req.Headers {
+			reqHTTP.Header.Set(head.Key, head.Value)
+		}
+	}
 	if err != nil {
-		return "", "", fmt.Errorf("Error creating request: %s", err.Error())
+		return "", "", "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
 
 	if req.Token != "" {
@@ -121,24 +133,25 @@ func (c *Collection) sendGET(req Requests) (string, string, error) {
 	client := getHTTPClient()
 	resp, err := client.Do(reqHTTP)
 	if err != nil {
-		return "", "", fmt.Errorf("Error sending request: %s", err.Error())
+		return "", "", "", fmt.Errorf("Error sending request: %s", err.Error())
 	}
 	defer resp.Body.Close()
 	// paramstr is suffixed with a `?` to append to the URL
 	if paramstr != "?" {
-		s := fmt.Sprintf("Status: %s\tStatusCode:\t%s \n", color.HiBlueString(resp.Status), color.New(color.FgHiBlue).Sprintln(resp.StatusCode))
-		return s, url, nil
+		status := fmt.Sprintf("%s", color.HiBlueString(resp.Status))
+		code := fmt.Sprintf("%s", color.New(color.FgHiBlue).Sprintln(resp.StatusCode))
+		return status, code, url, nil
 	}
-	s := fmt.Sprintf("Status: %s\tStatusCode:\t%s\n", color.HiBlueString(resp.Status), color.New(color.FgHiBlue).Sprintln(resp.StatusCode))
-	return s, "", nil
+	status := fmt.Sprintf("%s", color.HiBlueString(resp.Status))
+	code := fmt.Sprintf("%s", color.New(color.FgHiBlue).Sprintln(resp.StatusCode))
+	return status, code, "", nil
 }
 
 // sendPOST sends all request other than GET requests since
 // it's the only one which has BodyParams and RawParams
-func (c *Collection) sendPOST(req Requests, method string) (string, error) {
+func (c *Collection) sendPOST(req Requests, method string) (string, string, error) {
 
 	var (
-		// colorcy = color.New(color.FgCyan, color.Bold)
 		jsonStr []byte
 		url     = req.URL + req.Path
 		reqData = req
@@ -164,11 +177,16 @@ func (c *Collection) sendPOST(req Requests, method string) (string, error) {
 
 	finalBytes, err := json.RawMessage(jsonStr).MarshalJSON() // Marshal to JSON from strings
 	if err != nil {
-		return "", fmt.Errorf("Error Marhsaling JSON: %s", err.Error())
+		return "", "", fmt.Errorf("Error Marhsaling JSON: %s", err.Error())
 	}
 	reqHTTP, err := http.NewRequest(method, url, bytes.NewBuffer(finalBytes))
+	if len(req.Headers) > 0 {
+		for _, head := range req.Headers {
+			reqHTTP.Header.Set(head.Key, head.Value)
+		}
+	}
 	if err != nil {
-		return "", fmt.Errorf("Error creating request: %s", err.Error())
+		return "", "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
 
 	reqHTTP.Header.Set("Content-Type", req.Ctype) // Set Content type to said Ctype in Collection
@@ -179,21 +197,20 @@ func (c *Collection) sendPOST(req Requests, method string) (string, error) {
 	}
 	if req.User != "" && req.Pass != "" {
 		// Basic Auth
-		un := req.User
-		pw := req.Pass
-		reqHTTP.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
+		reqHTTP.Header.Add("Authorization", "Basic "+basicAuth(req.User, req.Pass))
 	}
 
 	client := getHTTPClient()
 	resp, err := client.Do(reqHTTP)
 	if err != nil {
-		return "", fmt.Errorf("Error sending request: %s", err.Error())
+		return "", "", fmt.Errorf("Error sending request: %s", err.Error())
 	}
 
 	defer resp.Body.Close()
 
-	s := fmt.Sprintf("Status: %s\tStatusCode:\t%s\n", color.HiBlueString(resp.Status), color.New(color.FgHiBlue).Sprintln(resp.StatusCode))
-	return s, nil
+	status := fmt.Sprintf("%s", color.HiBlueString(resp.Status))
+	code := fmt.Sprintf("%s", color.New(color.FgHiBlue).Sprintln(resp.StatusCode))
+	return status, code, nil
 }
 
 // getDatafromFolders handle edge cases when requests are saved inside folders
@@ -201,28 +218,37 @@ func (c *Collection) sendPOST(req Requests, method string) (string, error) {
 // This adds another loop to check for folders and requests
 func (c *Collection) getDatafromFolders() error {
 	var (
-		err           error
-		out, paramURL string
+		err                    error
+		paramURL, status, code string
+		tabData                [][]string
 	)
 	for _, Folder := range c.Folders {
-		for j := range Folder.Requests {
-			fmt.Printf("Folder Name:\t%s\n", color.HiMagentaString(Folder.Name))
-			fURL := fmt.Sprintf(Folder.Requests[j].URL + Folder.Requests[j].Path)
-			method := Folder.Requests[j].Method
+		for _, fRequest := range Folder.Requests {
+			fURL := fmt.Sprintf(fRequest.URL + fRequest.Path)
+			method := fRequest.Method
 			if method == "GET" {
-				out, paramURL, err = c.sendGET(Folder.Requests[j])
+				status, code, paramURL, err = c.sendGET(fRequest)
 			} else {
-				out, err = c.sendPOST(Folder.Requests[j], method)
+				status, code, err = c.sendPOST(fRequest, method)
 			}
 			if err != nil {
-				return err
+				log.Println(err)
 			}
 			if paramURL != "" {
-				fmt.Printf("%s |\t%s | %s |\t%s\n", color.HiGreenString(Folder.Requests[j].Name), color.HiRedString(paramURL), color.HiYellowString(method), out)
+				tabData = append(tabData, []string{color.HiGreenString(fRequest.Name), color.HiRedString(paramURL), color.HiYellowString(method), status, code})
 			} else {
-				fmt.Printf("%s |\t%s | %s |\t%s\n", color.HiGreenString(Folder.Requests[j].Name), color.HiRedString(fURL), color.HiYellowString(method), out)
+				tabData = append(tabData, []string{color.HiGreenString(fRequest.Name), color.HiRedString(fURL), color.HiYellowString(method), status, code})
 			}
 		}
 	}
+	genTables(tabData)
 	return nil
+}
+
+//genTables generate the output in Tabular Form
+func genTables(data [][]string) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Name", "URL", "Method", "Status", "Code"})
+	table.AppendBulk(data)
+	table.Render()
 }
