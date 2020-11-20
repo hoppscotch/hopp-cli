@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/themes/vue.css" />
+    <title>Documentation</title>
+  </head>
+  <body>
+      <main>
+    <section class="content">
+        <article class="markdown-section" id="main">
+    {{- range . -}}
+      <h1>{{.Name}}</h1>
+        {{if .Folders}}{{range .Folders}}
+        <hr/>    
+        <h2>Folder: {{.Name}}</h2>
+                {{- range .Requests -}}
+        <hr/><h3>{{.Name}}</h3>
+                    <p>Method: <b>{{.Method}}</b></p>
+                    <li>{{- .URL -}}{{.Path}}</li>
+                    {{if .Params}}
+                        <p>Params</p>
+                            {{range .Params}}
+                                <b>{{.key}}</b>:<i>{{.value}}</i><br/>
+                            {{- end -}}
+                    {{- end -}}
+                {{if eq .RawParams "{}"}}
+                {{else}}
+                <pre v-pre data-lang="json"><code class="lang-json">{{.RawParams}}</code></pre>
+                {{end}}
+                <p>Pre Request Script</p>
+                <pre v-pre data-lang="js"><code class="lang-js">{{.PreRequestScript}}</code></pre> 
+                {{- end -}}
+            {{end}}
+        {{else}}
+        {{- range .Requests -}}
+        <hr/><h2>{{.Name}}</h2>
+            <p>Method: <b>{{.Method}}</b></p>
+                    <li>{{- .URL -}}{{.Path}}</li>
+                {{if .Params}}
+                    {{range .Params}}
+                        <b>{{.key}}</b>:<i>{{.value}}</i><br/>
+                    {{end}}
+                {{end}}
+                {{if eq .RawParams "{}"}}
+                {{else}}
+                <pre v-pre data-lang="json"><code class="lang-json">{{.RawParams}}</code></pre>
+                {{end}}
+                <p>Pre Request Script</p>
+                <pre v-pre data-lang="js"><code class="lang-js">{{.PreRequestScript}}console.log("Hello")</code></pre> 
+            {{- end -}}
+            {{end}}
+    {{end}}
+        </article>
+    </section>
+</main>
+<script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+  </body>
+</html>

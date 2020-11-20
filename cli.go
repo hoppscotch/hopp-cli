@@ -124,6 +124,14 @@ func main() {
 				return nil
 			},
 		},
+		{
+			Name:  "gen",
+			Usage: "Generate Documentation from the Hoppscotch Collection.json",
+			Action: func(c *cli.Context) error {
+				mets.GenerateDocs(c.Args().Get(0))
+				return nil
+			},
+		},
 	}
 	cli.AppHelpTemplate = fmt.Sprintf(`%s
 
