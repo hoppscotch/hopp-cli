@@ -12,17 +12,18 @@
   <body>
     <main>
       <section class="content">
+          <h1>API Documentation</h1>
         <article class="markdown-section" id="main">
           {{-  range . -}}
           <h1>{{-  .Name}}</h1>
           {{- if .Folders}}{{range .Folders}}
           <hr />
-          <h2>Folder: {{- .Name}}</h2>
+          <h2>Folder: <u>{{- .Name}}</u></h2>
           {{-  range .Requests -}}
           <hr />
-          <h3>{{- .Name}}</h3>
+          <h2>{{- .Name}}</h2>
           <p>Method: <b>{{- .Method}}</b></p>
-          <code>{{-  .URL -}}{{.Path}}</code>
+          Request URL: <code>{{-  .URL -}}{{.Path}}</code>
           {{- if .Headers}}
           <p><b>Headers</b>:</p>
           <table>
@@ -48,9 +49,9 @@
             </tr>
             {{- range .Params}}
             <tr>
-              <td>{{- .type}}</td>
-              <td>{{- .key}}</td>
-              <td>{{- .value}}</td>
+              <td><i>{{- .type}}</i></td>
+              <td><code>{{- .key}}</code></td>
+              <td><code>{{- .value}}</code></td>
             </tr>
             {{-  end -}}
           </table>
@@ -66,21 +67,21 @@
           {{- end}} 
           {{- end}}
           {{- if and .RawParams (ne .RawParams "{}")}}
+          <p><b>RawParams: </b></p>
           <pre><code class="lang-json">{{- .RawParams}}</code></pre>
             {{- if .Ctype}}<p>Content Type: <b>{{.Ctype}}</b></p>{{end}}
           {{- end}}
           <p>Pre Request Script:</p>
-          <pre
-            v-pre
-            data-lang="js"
-          ><code class="lang-js">{{- .PreRequestScript}}</code></pre>
+          <pre><code class="lang-js">{{- .PreRequestScript}}</code></pre>
+          <p>Test Script:</p>
+          <pre><code class="lang-js">{{- .TestScript}}</code></pre>
           {{-  end -}} {{end}} {{else}} {{- range .Requests -}}
           <hr />
           <h2>{{- .Name}}</h2>
 
-          <p>Method: <b>{{- .Method}}</b></p>
+          <p>Method: <u><b>{{- .Method}}</b></u></p>
 
-          <li>{{-  .URL -}}{{.Path}}</li>
+          <b>Request URL</b>: <code>{{-  .URL -}}{{.Path}}</code>
           {{- if .Headers}}
           <p><b>Headers</b>:</p>
           <table>
@@ -107,8 +108,8 @@
             {{- range .Params}}
             <tr>
               <td>{{- .type}}</td>
-              <td>{{- .key}}</td>
-              <td>{{- .value}}</td>
+              <td><code>{{- .key}}</code></td>
+              <td><code>{{- .value}}</code></td>
             </tr>
             {{- end}}
           </table>
@@ -128,10 +129,14 @@
           {{- if .Ctype}}<p>Content Type: <b>{{.Ctype}}</b></p>{{end}}
           <p>PreRequest Script:</p>
           <pre><code class="lang-js">{{- .PreRequestScript}}</code></pre>
+          <p>Test Script:</p>
+          <pre><code class="lang-js">{{- .TestScript}}</code></pre>
           {{-  end -}} {{end}} {{end}}
         </article>
       </section>
     </main>
+    
     <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-json.min.js"></script>
   </body>
 </html>
