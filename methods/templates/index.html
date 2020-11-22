@@ -1,142 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="//cdn.jsdelivr.net/npm/docsify@4/themes/vue.css"
-    />
-    <title>Documentation</title>
-  </head>
-  <body>
-    <main>
-      <section class="content">
-          <h1>API Documentation</h1>
-        <article class="markdown-section" id="main">
-          {{-  range . -}}
-          <h1>{{-  .Name}}</h1>
-          {{- if .Folders}}{{range .Folders}}
-          <hr />
-          <h2>Folder: <u>{{- .Name}}</u></h2>
-          {{-  range .Requests -}}
-          <hr />
-          <h2>{{- .Name}}</h2>
-          <p>Method: <b>{{- .Method}}</b></p>
-          Request URL: <code>{{-  .URL -}}{{.Path}}</code>
-          {{- if .Headers}}
-          <p><b>Headers</b>:</p>
-          <table>
-            <tr>
-              <th>Key</th>
-              <th>Value</th>
-            </tr>
-            {{- range .Headers}}
-            <tr>
-              <td>{{- .Key}}</td>
-              <td><code>{{- .Value}}</code></td>
-            </tr>
-            {{-  end -}}
-          </table>
-          {{- end}}
-          {{- if .Params}}
-          <p><b>Params</b>:</p>
-          <table>
-            <tr>
-              <th>type</th>
-              <th>Key</th>
-              <th>Value</th>
-            </tr>
-            {{- range .Params}}
-            <tr>
-              <td><i>{{- .type}}</i></td>
-              <td><code>{{- .key}}</code></td>
-              <td><code>{{- .value}}</code></td>
-            </tr>
-            {{-  end -}}
-          </table>
-          {{-  end -}}
-          {{- if ne .Auth "None"}}
-          <p>Authentication Type: <b>{{- .Auth}}</b></p>
-          {{- if .Token}}
-          <p>Bearer Token: <code>{{- .Token}}</code></p>
-          {{-  if and .User .Pass}}
-            <p>Username: <code>{{- .User}}</code></p>
-            <p>Password: <code>{{- .Pass}}</code></p>
-            {{- end}}
-          {{- end}} 
-          {{- end}}
-          {{- if and .RawParams (ne .RawParams "{}")}}
-          <p><b>RawParams: </b></p>
-          <pre><code class="lang-json">{{- .RawParams}}</code></pre>
-            {{- if .Ctype}}<p>Content Type: <b>{{.Ctype}}</b></p>{{end}}
-          {{- end}}
-          <p>Pre Request Script:</p>
-          <pre><code class="lang-js">{{- .PreRequestScript}}</code></pre>
-          <p>Test Script:</p>
-          <pre><code class="lang-js">{{- .TestScript}}</code></pre>
-          {{-  end -}} {{end}} {{else}} {{- range .Requests -}}
-          <hr />
-          <h2>{{- .Name}}</h2>
-
-          <p>Method: <u><b>{{- .Method}}</b></u></p>
-
-          <b>Request URL</b>: <code>{{-  .URL -}}{{.Path}}</code>
-          {{- if .Headers}}
-          <p><b>Headers</b>:</p>
-          <table>
-            <tr>
-              <th>Key</th>
-              <th>Value</th>
-            </tr>
-            {{- range .Headers}}
-            <tr>
-              <td>{{- .Key}}</td>
-              <td><code>{{- .Value}}</code></td>
-            </tr>
-            {{-  end -}}
-          </table>
-          {{- end}}
-          {{- if .Params}}
-          <p><b>Params</b>:</p>
-          <table>
-            <tr>
-              <th>type</th>
-              <th>Key</th>
-              <th>Value</th>
-            </tr>
-            {{- range .Params}}
-            <tr>
-              <td>{{- .type}}</td>
-              <td><code>{{- .key}}</code></td>
-              <td><code>{{- .value}}</code></td>
-            </tr>
-            {{- end}}
-          </table>
-          {{- end}}
-          {{- if ne .Auth "None"}}
-            <p>Authentication Type <b>{{- .Auth}}</b></p>
-            {{- if .Token}}<p>Bearer Token: <code>{{.Token}}</code></p>{{end}}
-            {{-  if and .User .Pass}}
-            <p>Username: <code>{{- .User}}</code></p>
-            <p>Password: <code>{{- .Pass}}</code></p>
-            {{- end}}
-        {{- end}}
-        {{- if and .RawParams (ne .RawParams "{}")}}
-          <p>RawParams:</p>
-          <pre><code class="lang-json">{{- .RawParams}}</code></pre>
-          {{- end}}
-          {{- if .Ctype}}<p>Content Type: <b>{{.Ctype}}</b></p>{{end}}
-          <p>PreRequest Script:</p>
-          <pre><code class="lang-js">{{- .PreRequestScript}}</code></pre>
-          <p>Test Script:</p>
-          <pre><code class="lang-js">{{- .TestScript}}</code></pre>
-          {{-  end -}} {{end}} {{end}}
-        </article>
-      </section>
-    </main>
-    
-    <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-json.min.js"></script>
-  </body>
+<html>
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8">
+  <title>API Dococumentation</title>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/themes/vue.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+        name:"API Docs",
+        repo: 'hoppscotch/hopp-cli',
+    }
+  </script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+</body>
 </html>
