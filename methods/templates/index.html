@@ -3,58 +3,135 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/themes/vue.css" />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/docsify@4/themes/vue.css"
+    />
     <title>Documentation</title>
   </head>
   <body>
-      <main>
-    <section class="content">
+    <main>
+      <section class="content">
         <article class="markdown-section" id="main">
-    {{- range . -}}
-      <h1>{{.Name}}</h1>
-        {{if .Folders}}{{range .Folders}}
-        <hr/>    
-        <h2>Folder: {{.Name}}</h2>
-                {{- range .Requests -}}
-        <hr/><h3>{{.Name}}</h3>
-                    <p>Method: <b>{{.Method}}</b></p>
-                    <li>{{- .URL -}}{{.Path}}</li>
-                    {{if .Params}}
-                        <p>Params</p>
-                            {{range .Params}}
-                                <b>{{.key}}</b>:<i>{{.value}}</i><br/>
-                            {{- end -}}
-                    {{- end -}}
-                {{if eq .RawParams "{}"}}
-                {{else}}
-                <pre v-pre data-lang="json"><code class="lang-json">{{.RawParams}}</code></pre>
-                {{end}}
-                <p>Pre Request Script</p>
-                <pre v-pre data-lang="js"><code class="lang-js">{{.PreRequestScript}}</code></pre> 
-                {{- end -}}
-            {{end}}
-        {{else}}
-        {{- range .Requests -}}
-        <hr/><h2>{{.Name}}</h2>
-            <p>Method: <b>{{.Method}}</b></p>
-                    <li>{{- .URL -}}{{.Path}}</li>
-                {{if .Params}}
-                    {{range .Params}}
-                        <b>{{.key}}</b>:<i>{{.value}}</i><br/>
-                    {{end}}
-                {{end}}
-                {{if eq .RawParams "{}"}}
-                {{else}}
-                <pre v-pre data-lang="json"><code class="lang-json">{{.RawParams}}</code></pre>
-                {{end}}
-                <p>Pre Request Script</p>
-                <pre v-pre data-lang="js"><code class="lang-js">{{.PreRequestScript}}console.log("Hello")</code></pre> 
-            {{- end -}}
-            {{end}}
-    {{end}}
+          {{-  range . -}}
+          <h1>{{-  .Name}}</h1>
+          {{- if .Folders}}{{range .Folders}}
+          <hr />
+          <h2>Folder: {{- .Name}}</h2>
+          {{-  range .Requests -}}
+          <hr />
+          <h3>{{- .Name}}</h3>
+          <p>Method: <b>{{- .Method}}</b></p>
+          <code>{{-  .URL -}}{{.Path}}</code>
+          {{- if .Headers}}
+          <p><b>Headers</b>:</p>
+          <table>
+            <tr>
+              <th>Key</th>
+              <th>Value</th>
+            </tr>
+            {{- range .Headers}}
+            <tr>
+              <td>{{- .Key}}</td>
+              <td><code>{{- .Value}}</code></td>
+            </tr>
+            {{-  end -}}
+          </table>
+          {{- end}}
+          {{- if .Params}}
+          <p><b>Params</b>:</p>
+          <table>
+            <tr>
+              <th>type</th>
+              <th>Key</th>
+              <th>Value</th>
+            </tr>
+            {{- range .Params}}
+            <tr>
+              <td>{{- .type}}</td>
+              <td>{{- .key}}</td>
+              <td>{{- .value}}</td>
+            </tr>
+            {{-  end -}}
+          </table>
+          {{-  end -}}
+          {{- if ne .Auth "None"}}
+          <p>Authentication Type: <b>{{- .Auth}}</b></p>
+          {{- if .Token}}
+          <p>Bearer Token: <code>{{- .Token}}</code></p>
+          {{-  if and .User .Pass}}
+            <p>Username: <code>{{- .User}}</code></p>
+            <p>Password: <code>{{- .Pass}}</code></p>
+            {{- end}}
+          {{- end}} 
+          {{- end}}
+          {{- if and .RawParams (ne .RawParams "{}")}}
+          <pre><code class="lang-json">{{- .RawParams}}</code></pre>
+            {{- if .Ctype}}<p>Content Type: <b>{{.Ctype}}</b></p>{{end}}
+          {{- end}}
+          <p>Pre Request Script:</p>
+          <pre
+            v-pre
+            data-lang="js"
+          ><code class="lang-js">{{- .PreRequestScript}}</code></pre>
+          {{-  end -}} {{end}} {{else}} {{- range .Requests -}}
+          <hr />
+          <h2>{{- .Name}}</h2>
+
+          <p>Method: <b>{{- .Method}}</b></p>
+
+          <li>{{-  .URL -}}{{.Path}}</li>
+          {{- if .Headers}}
+          <p><b>Headers</b>:</p>
+          <table>
+            <tr>
+              <th>Key</th>
+              <th>Value</th>
+            </tr>
+            {{- range .Headers}}
+            <tr>
+              <td>{{- .Key}}</td>
+              <td><code>{{- .Value}}</code></td>
+            </tr>
+            {{-  end -}}
+          </table>
+          {{- end}}
+          {{- if .Params}}
+          <p><b>Params</b>:</p>
+          <table>
+            <tr>
+              <th>type</th>
+              <th>Key</th>
+              <th>Value</th>
+            </tr>
+            {{- range .Params}}
+            <tr>
+              <td>{{- .type}}</td>
+              <td>{{- .key}}</td>
+              <td>{{- .value}}</td>
+            </tr>
+            {{- end}}
+          </table>
+          {{- end}}
+          {{- if ne .Auth "None"}}
+            <p>Authentication Type <b>{{- .Auth}}</b></p>
+            {{- if .Token}}<p>Bearer Token: <code>{{.Token}}</code></p>{{end}}
+            {{-  if and .User .Pass}}
+            <p>Username: <code>{{- .User}}</code></p>
+            <p>Password: <code>{{- .Pass}}</code></p>
+            {{- end}}
+        {{- end}}
+        {{- if and .RawParams (ne .RawParams "{}")}}
+          <p>RawParams:</p>
+          <pre><code class="lang-json">{{- .RawParams}}</code></pre>
+          {{- end}}
+          {{- if .Ctype}}<p>Content Type: <b>{{.Ctype}}</b></p>{{end}}
+          <p>PreRequest Script:</p>
+          <pre><code class="lang-js">{{- .PreRequestScript}}</code></pre>
+          {{-  end -}} {{end}} {{end}}
         </article>
-    </section>
-</main>
-<script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+      </section>
+    </main>
+    <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
   </body>
 </html>
