@@ -1,8 +1,8 @@
-# Hoppscotch CLI [![hoppscotch](https://img.shields.io/badge/Made_for-Hoppscotch-hex_color_code?logo=Postwoman)](https://hoppscotch.io)  [![Go Report Card](https://goreportcard.com/badge/github.com/athul/pwcli)](https://goreportcard.com/report/github.com/athul/pwcli)
+# Hoppscotch CLI [![hoppscotch](https://img.shields.io/badge/Made_for-Hoppscotch-hex_color_code?logo=Postwoman)](https://hoppscotch.io) [![Go Report Card](https://goreportcard.com/badge/github.com/athul/pwcli)](https://goreportcard.com/report/github.com/athul/pwcli)
 
-Send HTTP requests from terminal. An alternative to cURL, httpie ⚡️
+Send HTTP requests from terminal and Generate API Docs. An alternative to cURL, httpie ⚡️
 
-# Installation
+## Installation
 
 ### From Script
 
@@ -40,40 +40,61 @@ Install by `brew install athul/tap/hopp-cli`
 
 > **IMPORTANT: Not tested on Windows, please leave your feedback/bugs in the Issues section**
 
-# Usages
+## Usages
 
 Putting Simply: **Just pass the URL to the request method**
-## Basic
+
+### Basic Commands
+
 - GET : `hopp-cli get <url> `
 - POST: `hopp-cli post <url> `
 - PATCH: `hopp-cli patch <url>`
 - PUT : `hopp-cli put <url>`
 - DELETE: `hopp-cli delete <url>`
 
-Example for a POST request: 
+Example for a POST request:
 `hopp-cli post https://reqres.in/api/users/2 -c js -b '{"name": "morp","job": "zion resident"}`
 
-### Extra
+### Extra Commands
 
-**SEND**: This can be used to test multiple endpoints from the `hoppscotch-collection.json` file. The output will only be the `statuscode`.  
+**SEND**: This can be used to test multiple endpoints from the `hoppscotch-collection.json` file.
+
+> The output will only be the `statuscode`
+
 Example : `hopp-cli send <PATH to hoppscotch collection.json>`  
-o/p:
+
+Sample Output:
 ![](/assets/send.png)
+
+**GEN**: Gen command Generates the API Documentation from  `hoppscotch-collection.json` file and serves it as a Static Page on port `1341`  
+Example: `hopp-cli gen <PATH to hoppscotch collection.json>`
+
+Sample Hosted site: https://hopp-docsify.surge.sh/
+
+Powered by [Doscify](https://docsify.js.org)
 
 
 ### There are 3 Authentication Flags
-*(optional)*        
+
+_(optional)_
+
 - `-t` or `--token` for a Bearer Token for Authentication
 - `-u` for the `Username` in Basic Auth
 - `-p` for the `password` in Basic Auth
+
 ### There are 2 flags especially for the data management requests like POST,PUT,PATCH and DELETE
-- `-c` or `--ctype` for the *Content Type*
 
-- `-b` or `--body` for the Data Body, this can be of json, html or plain text based on the request. 
-  > Enclose the body in Single Quotes(\')
+- `-c` or `--ctype` for the _Content Type_
 
-**Content Types can be of**         
-`html` : `text/html`   
-`js` : `application/json`   
-`xml` : `application/xml`   
-`plain` : `text/plain`  
+- `-b` or `--body` for the Data Body, this can be of json, html or plain text based on the request.
+
+> Enclose the body in Single Quotes(\')
+
+**Content Types can be of**  
+
+|Short Code|Content Type|
+|:---:|:---:|
+|`js`|`application/json`|
+|`html`|`text/html`|
+|`xml`|`application/xml`|
+|`plain`|`text/plain`|

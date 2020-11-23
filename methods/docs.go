@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"text/template"
+
+	"github.com/pkg/browser"
 )
 
 //GenerateDocs generates the Documentation site from the hoppscotch-collection.json
@@ -34,5 +36,6 @@ func GenerateDocs(filename string) {
 	http.Handle("/", fs)
 
 	log.Printf("\033[1;36m%s\033[0m", "Server Listening at http://localhost:1341")
+	browser.OpenURL("http://localhost:1341/") // AutoOpen the Broswer
 	http.ListenAndServe(":1341", nil)
 }
