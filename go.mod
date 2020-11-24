@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/fatih/color v1.9.0
+	github.com/knadh/stuffbin v1.1.0
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/pkg/browser v0.0.0-20201112035734-206646e67786
 	github.com/stretchr/testify v1.4.0 // indirect

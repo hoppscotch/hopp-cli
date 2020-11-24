@@ -74,7 +74,7 @@
 **RawParams:**
 
 ```json
-{{ .RawParams}}
+{{ .RawParams | html}}
 ```
 
 {{ if .Ctype}}**ContentType**:  `{{ .Ctype}}` {{ end -}}
@@ -84,13 +84,13 @@
 **Pre Request Script**:
 
 ```js
-{{ .PreRequestScript}}
+{{ .PreRequestScript | html}}
 ```
 
 **Test Script**:
 
 ```js
-{{ .TestScript}}
+{{ .TestScript | html}}
 ```
 
 {{ end -}}{{ end -}}{{ else}}
@@ -150,7 +150,7 @@ Password: `{{ .Pass}}`
 **RawParams**:
 
 ```json
-{{ .RawParams}}
+{{ .RawParams | html}}
 ```
 
 {{ end}}
@@ -159,13 +159,13 @@ Password: `{{ .Pass}}`
 **Pre Request Script**: 
 
 ```js
-{{ .PreRequestScript}}
+{{ .PreRequestScript | html}}
 ```
 
 **Test Script**: 
 
 ```js
-{{ .TestScript}}
+{{ .TestScript | html}}
 ```
 
 {{ end }}{{ end}}{{ end}}

@@ -1,13 +1,18 @@
+BIN:=hopp.bin
 PREFIX?=/usr/local
 BINDIR?=$(PREFIX)/bin
 VERSION?=$(shell git tag | grep ^v | sort -V | tail -n 1)
-GOFLAGS?=-ldflags '-X main.VERSION=${VERSION}'
+STATIC := ./templates/index.html ./templates/template.md:/template.md
 
-hopp-cli: cli.go go.mod go.sum
+deps:
+	go get -u github.com/knadh/stuffbin/...
+
+build: cli.go go.mod go.sum
 	@echo
 	@echo Building hopp-cli. This may take a minute or two.
 	@echo
-	go build $(GOFLAGS) -o $@
+	go build -o ${BIN} -ldflags="-s -w -X 'main.buildVersion=${VERSION}'" *.go
+	stuffbin -a stuff -in ${BIN} -out ${BIN} ${STATIC}
 	@echo
 	@echo ...Done\!
 
@@ -46,3 +51,6 @@ uninstall:
 	rm -f $(BINDIR)/hopp-cli
 	@echo
 	@echo ...Done\!
+.PHONY: pack-releases
+pack-releases:
+	$(foreach var,$(RELEASE_BUILDS),stuffbin -a stuff -in ${var} -out ${var} ${STATIC};)
