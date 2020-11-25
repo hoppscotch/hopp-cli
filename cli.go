@@ -42,6 +42,10 @@ func main() {
 			Usage: "Port at which the server will open to",
 			Value: 1341,
 		},
+		cli.BoolFlag{
+			Name:  "browser, b",
+			Usage: "Whether to open the browser automatically",
+		},
 	}
 	postFlags := []cli.Flag{
 		cli.StringFlag{

@@ -13,8 +13,6 @@ func initFileSystem(binPath string) (stuffbin.FileSystem, error) {
 	if err == stuffbin.ErrNoID {
 		// Running in local mode. Load the required static assets into
 		// the in-memory stuffbin.FileSystem.
-		log.Printf("unable to initialize embedded filesystem: %v", err)
-		log.Printf("using local filesystem for static assets")
 
 		files := []string{
 			"./templates/index.html",
@@ -23,6 +21,9 @@ func initFileSystem(binPath string) (stuffbin.FileSystem, error) {
 
 		// mutates err object.
 		fs, err = stuffbin.NewLocalFS("/", files...)
+		if err != nil {
+			log.Println("Error in Virtual FS", err)
+		}
 	}
 
 	// Either unstuff or NewLocalFS throws error,

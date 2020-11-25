@@ -82,7 +82,9 @@ func GenerateDocs(c *cli.Context) error {
 
 	log.Printf("\033[1;36mServer Listening at %s\033[0m", URL)
 
-	browser.OpenURL(URL) // AutoOpen the Broswer
+	if !c.Bool("browser") { //Check if User wants to open the Broswer
+		browser.OpenURL(URL) // AutoOpen the Broswer
+	}
 
 	http.ListenAndServe(PortStr, nil)
 	return nil
