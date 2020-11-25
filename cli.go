@@ -7,35 +7,12 @@ import (
 
 	mets "github.com/athul/pwcli/methods"
 	"github.com/fatih/color"
-	"github.com/knadh/stuffbin"
 	"github.com/urfave/cli"
 )
 
 // VERSION is set by `make` during the build to the most recent tag
 var buildVersion = "unknown"
 
-func initFileSystem(binPath string) (stuffbin.FileSystem, error) {
-	fs, err := stuffbin.UnStuff(binPath)
-	// If files are not stuffed with the binary,
-	// try to pick up files from local file system.
-	if err == stuffbin.ErrNoID {
-		// Running in local mode. Load the required static assets into
-		// the in-memory stuffbin.FileSystem.
-		log.Printf("unable to initialize embedded filesystem: %v", err)
-		log.Printf("using local filesystem for static assets")
-
-		files := []string{
-			// files
-		}
-
-		// mutates err object.
-		fs, err = stuffbin.NewLocalFS("/", files...)
-	}
-
-	// Either unstuff or NewLocalFS throws error,
-	// mutated error value will be returned
-	return fs, err
-}
 func main() {
 	app := cli.NewApp()
 	app.Name = color.HiGreenString("Hoppscotch CLI")
@@ -57,6 +34,13 @@ func main() {
 		cli.StringFlag{
 			Name:  "p",
 			Usage: "Add the Password",
+		},
+	}
+	genFlags := []cli.Flag{
+		cli.IntFlag{
+			Name:  "port, p",
+			Usage: "Port at which the server will open to",
+			Value: 1341,
 		},
 	}
 	postFlags := []cli.Flag{
@@ -150,8 +134,11 @@ func main() {
 		{
 			Name:  "gen",
 			Usage: "Generate Documentation from the Hoppscotch Collection.json",
+			Flags: genFlags,
 			Action: func(c *cli.Context) error {
-				mets.GenerateDocs(c.Args().Get(0))
+				if err := mets.GenerateDocs(c); err != nil {
+					return err
+				}
 				return nil
 			},
 		},

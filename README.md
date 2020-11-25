@@ -46,16 +46,23 @@ Putting Simply: **Just pass the URL to the request method**
 
 ### Basic Commands
 
-- GET : `hopp-cli get <url> `
-- POST: `hopp-cli post <url> `
-- PATCH: `hopp-cli patch <url>`
-- PUT : `hopp-cli put <url>`
-- DELETE: `hopp-cli delete <url>`
+- GET : `$ hopp-cli get <url> `
+- POST: `$ hopp-cli post <url> `
+- PATCH: `$ hopp-cli patch <url>`
+- PUT : `$ hopp-cli put <url>`
+- DELETE: `$ hopp-cli delete <url>`
 
 Example for a POST request:
-`hopp-cli post https://reqres.in/api/users/2 -c js -b '{"name": "morp","job": "zion resident"}`
+
+```shell
+$ hopp-cli post https://reqres.in/api/users/2 -c js -b '{"name": "morp","job": "zion resident"}'
+
+```
 
 ### Extra Commands
+
+- `send` for testing multiple endpoints
+- `gen` for generating API docs from Collection
 
 **SEND**: This can be used to test multiple endpoints from the `hoppscotch-collection.json` file.
 
@@ -66,6 +73,8 @@ Example : `hopp-cli send <PATH to hoppscotch collection.json>`
 Sample Output:
 ![](/assets/send.png)
 
+---
+
 **GEN**: Gen command Generates the API Documentation from  `hoppscotch-collection.json` file and serves it as a Static Page on port `1341`  
 Example: `hopp-cli gen <PATH to hoppscotch collection.json>`
 
@@ -73,6 +82,9 @@ Sample Hosted site: https://hopp-docsify.surge.sh/
 
 Powered by [Doscify](https://docsify.js.org)
 
+Flags:
+
+- `port` or `p` for specifying the port where the server should listen to
 
 ### There are 3 Authentication Flags
 

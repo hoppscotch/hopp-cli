@@ -2,13 +2,16 @@ package methods
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/knadh/stuffbin"
 	"github.com/pkg/browser"
+	"github.com/urfave/cli"
 )
 
 //Fstruct handles the buffer for generated README.md File
@@ -35,19 +38,19 @@ func (f *Fstruct) IsDir() bool { return false }
 func (f *Fstruct) Sys() interface{} { return nil }
 
 //GenerateDocs generates the Documentation site from the hoppscotch-collection.json
-func GenerateDocs(filename string) {
+func GenerateDocs(c *cli.Context) error {
 	execPath, err := os.Executable() //get Executable Path for StuffBin
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	fs, err := initFileSystem(execPath) //Init Virtual FS
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	colls, err := ReadCollection(filename)
+	colls, err := ReadCollection(c.Args().Get(0))
 	if err != nil {
-		log.Printf("Error Occured %v", err)
+		return err
 	}
 	// FuncMap for the HTML template
 	fmap := map[string]interface{}{
@@ -59,24 +62,28 @@ func GenerateDocs(filename string) {
 	var f Fstruct
 	// Execute the template to the file.
 	if err = t.Execute(&f.b, colls); err != nil {
-		log.Println(err)
+		return err
 	}
 
 	if err := fs.Add(stuffbin.NewFile("/README.md", &f, f.b.Bytes())); err != nil {
-		log.Fatal(err)
+		return err
 	}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		out, err := fs.Read("templates/index.html")
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 		w.Write(out)
 	})
+	PortStr := ":" + strconv.Itoa(c.Int("port"))
+	URL := fmt.Sprintf("http://localhost%s", PortStr)
+
 	http.Handle("/static/", http.StripPrefix("/static/", fs.FileServer()))
 
-	log.Printf("\033[1;36m%s\033[0m", "Server Listening at http://localhost:1341")
+	log.Printf("\033[1;36mServer Listening at %s\033[0m", URL)
 
-	browser.OpenURL("http://localhost:1341") // AutoOpen the Broswer
+	browser.OpenURL(URL) // AutoOpen the Broswer
 
-	http.ListenAndServe(":1341", nil)
+	http.ListenAndServe(PortStr, nil)
+	return nil
 }
