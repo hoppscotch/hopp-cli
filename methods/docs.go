@@ -14,28 +14,26 @@ import (
 	"github.com/urfave/cli"
 )
 
-//Fstruct handles the buffer for generated README.md File
-type Fstruct struct {
-	b bytes.Buffer
-}
+//FileTrunk handles the buffer for generated README.md File
+type FileTrunk struct{ bytes.Buffer }
 
 // Name holds the FileName, here README.md
-func (f *Fstruct) Name() string { return "README.md" }
+func (f *FileTrunk) Name() string { return "README.md" }
 
 // Size holds the size of the File
-func (f *Fstruct) Size() int64 { return int64(len(f.b.Bytes())) }
+func (f *FileTrunk) Size() int64 { return int64(f.Len()) }
 
 // Mode holds the file Mode
-func (f *Fstruct) Mode() os.FileMode { return 0755 }
+func (f *FileTrunk) Mode() os.FileMode { return 0755 }
 
 // ModTime holds creation time of File
-func (f *Fstruct) ModTime() time.Time { return time.Now() }
+func (f *FileTrunk) ModTime() time.Time { return time.Now() }
 
 // IsDir checks if True
-func (f *Fstruct) IsDir() bool { return false }
+func (f *FileTrunk) IsDir() bool { return false }
 
 // Sys - I have no idea
-func (f *Fstruct) Sys() interface{} { return nil }
+func (f *FileTrunk) Sys() interface{} { return nil }
 
 //GenerateDocs generates the Documentation site from the hoppscotch-collection.json
 func GenerateDocs(c *cli.Context) error {
@@ -59,13 +57,15 @@ func GenerateDocs(c *cli.Context) error {
 
 	t, err := stuffbin.ParseTemplates(fmap, fs, "/template.md")
 
-	var f Fstruct
+	// f will be used to store rendered templates in memory.
+	var f FileTrunk
+
 	// Execute the template to the file.
-	if err = t.Execute(&f.b, colls); err != nil {
+	if err = t.Execute(&f, colls); err != nil {
 		return err
 	}
 
-	if err := fs.Add(stuffbin.NewFile("/README.md", &f, f.b.Bytes())); err != nil {
+	if err := fs.Add(stuffbin.NewFile("/README.md", &f, f.Bytes())); err != nil {
 		return err
 	}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
