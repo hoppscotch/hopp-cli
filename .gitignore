@@ -10,6 +10,8 @@
 *.so
 *.dylib
 hopp-cli
+hoop.bin
+dist/
 
 # Test binary, built with `go test -c`
 *.test
