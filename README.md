@@ -34,11 +34,11 @@ $ sudo make install
 - Mac(x64)
 - Windows(x64,x86)
 
+> **IMPORTANT: Not tested on Windows, please leave your feedback/bugs in the Issues section**
+
 ### Homebrew
 
 Install by `brew install athul/tap/hopp-cli`
-
-> **IMPORTANT: Not tested on Windows, please leave your feedback/bugs in the Issues section**
 
 ## Usages
 
@@ -84,7 +84,8 @@ Powered by [Doscify](https://docsify.js.org)
 
 Flags:
 
-- `port` or `p` for specifying the port where the server should listen to
+- `browser` or `b` to toggle whether the browser should open automatically [Boolean]
+- `port` or `p` for specifying the port where the server should listen to [Integer]
 
 ### There are 3 Authentication Flags
 
