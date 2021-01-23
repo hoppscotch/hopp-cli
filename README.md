@@ -28,13 +28,24 @@ $ sudo make install
 
 ### From Binary
 
-- You can find the Binaries in Gzipped form from the [Releases](https://github.com/athul/pwcli/releases) page  
+- You can find the Binaries in Gzipped form from the [Releases](https://github.com/athul/pwcli/releases) page
   **Supports**
 - Linux(x64,x86)
 - Mac(x64)
 - Windows(x64,x86)
 
 > **IMPORTANT: Not tested on Windows, please leave your feedback/bugs in the Issues section**
+
+### Arch GNU/Linux
+
+- You can install from [AUR](https://aur.archlinux.org/)
+- There are three different packages available
+
+Name          | Link                                              | Description
+------------- | ------------------------------------------------- | -----------------------------
+hopp-cli-bin  | https://aur.archlinux.org/packages/hopp-cli-bin/  | Pre-built binary
+hopp-cli      | https://aur.archlinux.org/packages/hopp-cli/      | Compiled from latest release
+hopp-cli-git  | https://aur.archlinux.org/packages/hopp-cli-git/  | Compiled from latest commit
 
 ### Homebrew
 
@@ -68,14 +79,14 @@ $ hopp-cli post https://reqres.in/api/users/2 -c js -b '{"name": "morp","job": "
 
 > The output will only be the `statuscode`
 
-Example : `hopp-cli send <PATH to hoppscotch collection.json>`  
+Example : `hopp-cli send <PATH to hoppscotch collection.json>`
 
 Sample Output:
 ![](/assets/send.png)
 
 ---
 
-**GEN**: Gen command Generates the API Documentation from  `hoppscotch-collection.json` file and serves it as a Static Page on port `1341`  
+**GEN**: Gen command Generates the API Documentation from  `hoppscotch-collection.json` file and serves it as a Static Page on port `1341`
 Example: `hopp-cli gen <PATH to hoppscotch collection.json>`
 
 Sample Hosted site: https://hopp-docsify.surge.sh/
@@ -103,7 +114,7 @@ _(optional)_
 
 > Enclose the body in Single Quotes(\')
 
-**Content Types can be of**  
+**Content Types can be of**
 
 |Short Code|Content Type|
 |:---:|:---:|
