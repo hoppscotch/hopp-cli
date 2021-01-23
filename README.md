@@ -36,6 +36,17 @@ $ sudo make install
 
 > **IMPORTANT: Not tested on Windows, please leave your feedback/bugs in the Issues section**
 
+### Arch GNU/Linux
+
+- You can install from [AUR](https://aur.archlinux.org/)
+- There are three different packages available
+
+Name          | Link                                              | Description
+------------- | ------------------------------------------------- | -----------------------------
+hopp-cli-bin  | https://aur.archlinux.org/packages/hopp-cli-bin/  | Pre-built binary
+hopp-cli      | https://aur.archlinux.org/packages/hopp-cli/      | Compiled from latest release
+hopp-cli-git  | https://aur.archlinux.org/packages/hopp-cli-get/  | Compiled from latest commit
+
 ### Homebrew
 
 Install by `brew install athul/tap/hopp-cli`
