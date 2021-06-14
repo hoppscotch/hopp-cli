@@ -8,7 +8,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/pkg/browser v0.0.0-20201112035734-206646e67786
 	github.com/stretchr/testify v1.4.0 // indirect
-	github.com/tidwall/pretty v1.0.2
+	github.com/tidwall/pretty v1.2.0
 	github.com/urfave/cli v1.22.2
 	github.com/yosssi/gohtml v0.0.0-20190915184251-7ff6f235ecaf
 	go.uber.org/multierr v1.6.0
