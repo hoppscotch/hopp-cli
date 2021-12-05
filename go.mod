@@ -1,4 +1,4 @@
-module github.com/athul/pwcli
+module github.com/hoppscotch/hopp-cli
 
 go 1.16
 
