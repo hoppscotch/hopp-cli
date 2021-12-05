@@ -122,3 +122,8 @@ _(optional)_
 |`html`|`text/html`|
 |`xml`|`application/xml`|
 |`plain`|`text/plain`|
+
+### Include Arbitrary Headers
+- `-H` or `--header` may be specified multiple times to include headers with the request.
+- Example:
+  - `hopp-cli get -H 'X-Api-Key: foobar' -H 'X-Api-Secret: super_secret' https://example.com/api/v1/accounts`
