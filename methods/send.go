@@ -28,7 +28,7 @@ func ReadCollection(filename string) ([]Collection, error) {
 	var jsonArr []Collection
 	err = json.Unmarshal([]byte(data), &jsonArr) // Unmarshal JSON to Collection Type
 	if err != nil {
-		return nil, fmt.Errorf("Error parsing JSON: %s", err.Error())
+		return nil, fmt.Errorf("error parsing JSON: %w", err)
 	}
 	return jsonArr, nil
 }
@@ -115,7 +115,7 @@ func (c *Collection) sendGET(req Requests) (string, string, string, error) {
 		}
 	}
 	if err != nil {
-		return "", "", "", fmt.Errorf("Error creating request: %s", err.Error())
+		return "", "", "", fmt.Errorf("error creating request: %w", err)
 	}
 
 	if req.Token != "" {
@@ -132,7 +132,7 @@ func (c *Collection) sendGET(req Requests) (string, string, string, error) {
 	client := getHTTPClient()
 	resp, err := client.Do(reqHTTP)
 	if err != nil {
-		return "", "", "", fmt.Errorf("Error sending request: %s", err.Error())
+		return "", "", "", fmt.Errorf("error sending request: %w", err)
 	}
 	defer resp.Body.Close()
 	// paramstr is suffixed with a `?` to append to the URL
@@ -176,7 +176,7 @@ func (c *Collection) sendPOST(req Requests, method string) (string, string, erro
 
 	finalBytes, err := json.RawMessage(jsonStr).MarshalJSON() // Marshal to JSON from strings
 	if err != nil {
-		return "", "", fmt.Errorf("Error Marhsaling JSON: %s", err.Error())
+		return "", "", fmt.Errorf("error Marhsaling JSON: %w", err)
 	}
 	reqHTTP, err := http.NewRequest(method, url, bytes.NewBuffer(finalBytes))
 	if len(req.Headers) > 0 {
@@ -185,7 +185,7 @@ func (c *Collection) sendPOST(req Requests, method string) (string, string, erro
 		}
 	}
 	if err != nil {
-		return "", "", fmt.Errorf("Error creating request: %s", err.Error())
+		return "", "", fmt.Errorf("error creating request: %w", err)
 	}
 
 	reqHTTP.Header.Set("Content-Type", req.Ctype) // Set Content type to said Ctype in Collection
@@ -202,7 +202,7 @@ func (c *Collection) sendPOST(req Requests, method string) (string, string, erro
 	client := getHTTPClient()
 	resp, err := client.Do(reqHTTP)
 	if err != nil {
-		return "", "", fmt.Errorf("Error sending request: %s", err.Error())
+		return "", "", fmt.Errorf("error sending request: %w", err)
 	}
 
 	defer resp.Body.Close()

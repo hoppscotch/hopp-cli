@@ -21,7 +21,7 @@ func formatresp(resp *http.Response) (string, error) {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", fmt.Errorf("Error reading response body: %s", err.Error())
+		return "", fmt.Errorf("error reading response body: %w", err)
 	}
 
 	for key, value := range resp.Header {
