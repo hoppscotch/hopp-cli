@@ -3,7 +3,7 @@ package methods
 import (
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 
@@ -19,7 +19,7 @@ func formatresp(resp *http.Response) (string, error) {
 	c := color.New(color.FgHiCyan)
 	magenta := color.New(color.FgHiMagenta)
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("Error reading response body: %s", err.Error())
 	}
@@ -50,7 +50,7 @@ func basicAuth(username, password string) string {
 	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
 
-//Contenttypes are used in Place for ctypes for sending requests
+// Contenttypes are used in Place for ctypes for sending requests
 var Contenttypes = map[string]string{
 	"html":  "text/html",
 	"js":    "application/json",

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -16,9 +15,9 @@ import (
 	"go.uber.org/multierr"
 )
 
-//ReadCollection reads the `hoppScotch-collection.json` File and returns a the Loaded Collection Struct
+// ReadCollection reads the `hoppScotch-collection.json` File and returns a the Loaded Collection Struct
 func ReadCollection(filename string) ([]Collection, error) {
-	data, err := ioutil.ReadFile(filename)
+	data, err := os.ReadFile(filename)
 	if string(data) == "" {
 		return nil, errors.New("PATH is needed")
 	}
@@ -245,7 +244,7 @@ func (c *Collection) getDatafromFolders() error {
 	return nil
 }
 
-//genTables generate the output in Tabular Form
+// genTables generate the output in Tabular Form
 func genTables(data [][]string) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Name", "URL", "Method", "Status", "Code"})
