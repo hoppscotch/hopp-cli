@@ -68,6 +68,10 @@ func main() {
 			Name:  "body, b",
 			Usage: "Body of the Post Request",
 		},
+		cli.BoolFlag{
+			Name:  "editor, e",
+			Usage: "Open editor to insert request body",
+		},
 	}
 	app.Commands = []cli.Command{
 		{
