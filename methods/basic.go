@@ -29,46 +29,42 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 		// check OS
 		currentOs := runtime.GOOS
 
-		// based on OS find path for default editor
+		// based on OS find assign default editor
 		if currentOs == "linux" || currentOs == "darwin" {
 			editor = "nano"
-			path, err = exec.LookPath(editor)
 		} else if currentOs == "windows" {
 			editor = "notepad"
-			path, err = exec.LookPath(editor)
 		}
 
-		fmt.Println(string(path))
+		path, err = exec.LookPath(editor)
 		if err != nil {
-			return "", fmt.Errorf("Error %s while locating %s!!", path, editor)
+			return "", fmt.Errorf("Unable to locate %s at %s", editor, path)
 		}
 
 		// create temp file for writing request body
-
 		tempFile, err := ioutil.TempFile("", "HOPP-CLI-REQUEST*.txt")
-
 		if err != nil {
 			return "", fmt.Errorf("Unable to create temp file: %s\n%s", tempFile.Name(), err)
 		}
 
-		// open temp file in selected editor and wait until closed
 		tempFileName := string(tempFile.Name())
+		tempFile.Close()
+
+		// open temp file in selected editor and wait until closed
 		cmd := exec.Command(path, tempFileName)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 
 		err = cmd.Start()
-
 		if err != nil {
 			return "", fmt.Errorf("Unable to open editor: %s", err)
 		}
 
-		color.Yellow("Waiting for file to close..\n")
+		color.Yellow("Waiting for file to close..\n\n")
 		cmd.Wait()
 
 		// read temp file contents
 		fileData, err := ioutil.ReadFile(tempFileName)
-
 		if err != nil {
 			return "", fmt.Errorf("Error reading file: %s", err)
 		}
