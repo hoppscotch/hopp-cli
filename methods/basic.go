@@ -9,7 +9,6 @@ import (
 	"os/exec"
 	"runtime"
 
-	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
 
@@ -23,31 +22,34 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 	var jsonStr []byte
 
 	if c.Bool("editor") {
-		var path string
+		var path = os.Getenv("EDITOR")
 		var editor string
 
-		// check OS
-		currentOs := runtime.GOOS
+		if path == "" {
+			// check OS
+			currentOs := runtime.GOOS
 
-		// based on OS find assign default editor
-		if currentOs == "linux" || currentOs == "darwin" {
-			editor = "nano"
-		} else if currentOs == "windows" {
-			editor = "notepad"
-		}
+			// based on OS find assign default editor
+			if currentOs == "linux" || currentOs == "darwin" {
+				editor = "nano"
+			} else if currentOs == "windows" {
+				editor = "notepad"
+			}
 
-		path, err = exec.LookPath(editor)
-		if err != nil {
-			return "", fmt.Errorf("Unable to locate %s at %s", editor, path)
+			path, err = exec.LookPath(editor)
+			if err != nil {
+				return "", fmt.Errorf("Unable to locate %s: %w", editor, err)
+			}
 		}
 
 		// create temp file for writing request body
 		tempFile, err := ioutil.TempFile("", "HOPP-CLI-REQUEST*.txt")
 		if err != nil {
-			return "", fmt.Errorf("Unable to create temp file: %s\n%s", tempFile.Name(), err)
+			return "", fmt.Errorf("Unable to create temp file: %w", err)
 		}
 
 		tempFileName := string(tempFile.Name())
+		defer os.Remove(tempFileName)
 		tempFile.Close()
 
 		// open temp file in selected editor and wait until closed
@@ -57,21 +59,21 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 
 		err = cmd.Start()
 		if err != nil {
-			return "", fmt.Errorf("Unable to open editor: %s", err)
+			return "", fmt.Errorf("Unable to open editor: %w", err)
 		}
 
-		color.Yellow("Waiting for file to close..\n\n")
-		cmd.Wait()
+		fmt.Println("Waiting for file to close..")
+
+		err = cmd.Wait()
+		if err != nil {
+			return "", fmt.Errorf("Error waiting for file: %w", err)
+		}
 
 		// read temp file contents
-		fileData, err := ioutil.ReadFile(tempFileName)
+		jsonStr, err = ioutil.ReadFile(tempFileName)
 		if err != nil {
-			return "", fmt.Errorf("Error reading file: %s", err)
+			return "", fmt.Errorf("Error reading file %s: %w", tempFileName, err)
 		}
-
-		jsonStr = []byte(string(fileData))
-
-		defer os.Remove(tempFileName)
 	} else {
 		jsonStr = []byte(c.String("body"))
 	}
