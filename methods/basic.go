@@ -5,11 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-<<<<<<< HEAD
-	"strings"
-=======
 	"os"
->>>>>>> 84d9335cf8a8fede56f25b0c16981965393f5bc5
+	"strings"
 
 	"github.com/urfave/cli"
 )
