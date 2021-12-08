@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/urfave/cli"
@@ -20,9 +21,19 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 		return "", err
 	}
 
-	var jsonStr []byte
-
-	if c.Bool("editor") {
+	// Check if we're being passed a request body from stdin.
+	// If so, use that. Otherwise, use the request data passed via cli flag.
+	var body []byte
+	stat, err := os.Stdin.Stat()
+	if err != nil {
+		return "", fmt.Errorf("error getting file info for stdin fd: %w", err)
+	}
+	if (stat.Mode() & os.ModeCharDevice) == 0 {
+		body, err = ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			return "", fmt.Errorf("error reading from stdin: %w", err)
+		}
+	} else if c.Bool("editor") {
 		var path string
 		var editor = os.Getenv("EDITOR")
 
@@ -69,15 +80,15 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 		}
 
 		// read temp file contents
-		jsonStr, err = ioutil.ReadFile(tempFileName)
+		body, err = ioutil.ReadFile(tempFileName)
 		if err != nil {
 			return "", fmt.Errorf("Error reading file %s: %w", tempFileName, err)
 		}
 	} else {
-		jsonStr = []byte(c.String("body"))
+		body = []byte(c.String("body"))
 	}
 
-	req, err := http.NewRequest(method, url, bytes.NewBuffer(jsonStr))
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(body))
 	if err != nil {
 		return "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
@@ -87,6 +98,12 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 		var bearer = "Bearer " + c.String("token")
 		req.Header.Add("Authorization", bearer)
 	}
+
+	for _, h := range c.StringSlice("header") {
+		kv := strings.Split(h, ": ")
+		req.Header.Add(kv[0], kv[1])
+	}
+
 	if c.String("u") != "" && c.String("p") != "" {
 		un := c.String("u")
 		pw := c.String("p")
