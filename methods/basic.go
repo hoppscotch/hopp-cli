@@ -3,8 +3,13 @@ package methods
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"net/http"
+<<<<<<< HEAD
 	"strings"
+=======
+	"os"
+>>>>>>> 84d9335cf8a8fede56f25b0c16981965393f5bc5
 
 	"github.com/urfave/cli"
 )
@@ -16,8 +21,23 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 		return "", err
 	}
 
-	var jsonStr = []byte(c.String("body"))
-	req, err := http.NewRequest(method, url, bytes.NewBuffer(jsonStr))
+	// Check if we're being passed a request body from stdin.
+	// If so, use that. Otherwise, use the request data passed via cli flag.
+	var body []byte
+	stat, err := os.Stdin.Stat()
+	if err != nil {
+		return "", fmt.Errorf("error getting file info for stdin fd: %w", err)
+	}
+	if (stat.Mode() & os.ModeCharDevice) == 0 {
+		body, err = io.ReadAll(os.Stdin)
+		if err != nil {
+			return "", fmt.Errorf("error reading from stdin: %w", err)
+		}
+	} else {
+		body = []byte(c.String("body"))
+	}
+
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(body))
 	if err != nil {
 		return "", fmt.Errorf("Error creating request: %s", err.Error())
 	}
