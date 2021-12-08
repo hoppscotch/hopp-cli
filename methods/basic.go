@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"runtime"
 
+	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
 
@@ -22,10 +23,10 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 	var jsonStr []byte
 
 	if c.Bool("editor") {
-		var path = os.Getenv("EDITOR")
-		var editor string
+		var path string
+		var editor = os.Getenv("EDITOR")
 
-		if path == "" {
+		if editor == "" {
 			// check OS
 			currentOs := runtime.GOOS
 
@@ -35,11 +36,11 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 			} else if currentOs == "windows" {
 				editor = "notepad"
 			}
+		}
 
-			path, err = exec.LookPath(editor)
-			if err != nil {
-				return "", fmt.Errorf("Unable to locate %s: %w", editor, err)
-			}
+		path, err = exec.LookPath(editor)
+		if err != nil {
+			return "", fmt.Errorf("Unable to locate %s: %w", editor, err)
 		}
 
 		// create temp file for writing request body
@@ -62,7 +63,7 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 			return "", fmt.Errorf("Unable to open editor: %w", err)
 		}
 
-		fmt.Println("Waiting for file to close..")
+		color.Yellow("Waiting for file to close..\n\n")
 
 		err = cmd.Wait()
 		if err != nil {
