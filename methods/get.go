@@ -3,11 +3,12 @@ package methods
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/urfave/cli"
 )
 
-//Getbasic sends a simple GET request to the url with any potential parameters like Tokens or Basic Auth
+// Getbasic sends a simple GET request to the url with any potential parameters like Tokens or Basic Auth
 func Getbasic(c *cli.Context) (string, error) {
 	var url, err = checkURL(c.Args().Get(0))
 	if err != nil {
@@ -27,6 +28,11 @@ func Getbasic(c *cli.Context) (string, error) {
 		un := c.String("u")
 		pw := c.String("p")
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
+	}
+
+	for _, h := range c.StringSlice("header") {
+		kv := strings.Split(h, ": ")
+		req.Header.Add(kv[0], kv[1])
 	}
 
 	client := getHTTPClient()

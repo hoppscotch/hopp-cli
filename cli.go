@@ -35,6 +35,10 @@ func main() {
 			Name:  "p",
 			Usage: "Add the Password",
 		},
+		cli.StringSliceFlag{
+			Name:  "header, H",
+			Usage: "Header to pass with the request. Can be used multiple times.",
+		},
 	}
 	genFlags := []cli.Flag{
 		cli.IntFlag{
@@ -61,12 +65,16 @@ func main() {
 			Usage: "Add the Password",
 		},
 		cli.StringFlag{
-			Name:  "ctype, c", //Content Type Flag
+			Name:  "ctype, c", // Content Type Flag
 			Usage: "Change the Content Type",
 		},
 		cli.StringFlag{
 			Name:  "body, b",
 			Usage: "Body of the Post Request",
+		},
+		cli.StringSliceFlag{
+			Name:  "header, H",
+			Usage: "Header to pass with the request. Can be used multiple times.",
 		},
 	}
 	app.Commands = []cli.Command{

@@ -123,6 +123,11 @@ _(optional)_
 |`xml`|`application/xml`|
 |`plain`|`text/plain`|
 
+### Include Arbitrary Headers
+- `-H` or `--header` may be specified multiple times to include headers with the request.
+- Example:
+  - `hopp-cli get -H 'X-Api-Key: foobar' -H 'X-Api-Secret: super_secret' https://example.com/api/v1/accounts`
+
 ### Providing a Request Body via stdin
 
 In addition to `-b`/`--body`, you may provide a request body via stdin.

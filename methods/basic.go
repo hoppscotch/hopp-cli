@@ -5,7 +5,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+<<<<<<< HEAD
+	"strings"
+=======
 	"os"
+>>>>>>> 84d9335cf8a8fede56f25b0c16981965393f5bc5
 
 	"github.com/urfave/cli"
 )
@@ -43,6 +47,12 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 		var bearer = "Bearer " + c.String("token")
 		req.Header.Add("Authorization", bearer)
 	}
+
+	for _, h := range c.StringSlice("header") {
+		kv := strings.Split(h, ": ")
+		req.Header.Add(kv[0], kv[1])
+	}
+
 	if c.String("u") != "" && c.String("p") != "" {
 		un := c.String("u")
 		pw := c.String("p")
