@@ -58,15 +58,13 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 
-		err = cmd.Start()
-		if err != nil {
+		if err := cmd.Start(); err != nil {
 			return "", fmt.Errorf("Unable to open editor: %w", err)
 		}
 
 		color.Yellow("Waiting for file to close..\n\n")
 
-		err = cmd.Wait()
-		if err != nil {
+		if err := cmd.Wait(); err != nil {
 			return "", fmt.Errorf("Error waiting for file: %w", err)
 		}
 
