@@ -9,14 +9,14 @@ all: deps build
 
 .PHONY: deps
 deps:
-	@printf '%s\n' 'Installing binary dependencies...'
-	go install github.com/knadh/stuffbin/stuffbin@latest
+	@printf '%s\n' 'Checking binary dependencies...'
+	@if [ ! -f "$(shell go env GOPATH)/bin/stuffbin" ]; then printf '%s\n' 'Installing stuffbin to GOPATH' && go install github.com/knadh/stuffbin/stuffbin@latest; fi
 
 .PHONY: build
 build:
 	@printf '%s\n' 'Building hopp-cli. This may take a minute or two.'
 	go build -o ${BIN} -ldflags="-s -w -X 'main.buildVersion=${VERSION}'"
-	stuffbin -a stuff -in ${BIN} -out ${BINSTUFFED} ${STATIC}
+	$(shell go env GOPATH)/bin/stuffbin -a stuff -in ${BIN} -out ${BINSTUFFED} ${STATIC}
 	rm ${BIN}
 
 .PHONY: clean
