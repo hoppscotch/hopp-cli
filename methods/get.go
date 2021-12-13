@@ -3,6 +3,7 @@ package methods
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/urfave/cli"
 )
@@ -27,6 +28,11 @@ func Getbasic(c *cli.Context) (string, error) {
 		un := c.String("u")
 		pw := c.String("p")
 		req.Header.Add("Authorization", "Basic "+basicAuth(un, pw))
+	}
+
+	for _, h := range c.StringSlice("header") {
+		kv := strings.Split(h, ": ")
+		req.Header.Add(kv[0], kv[1])
 	}
 
 	client := getHTTPClient()

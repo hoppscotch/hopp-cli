@@ -122,3 +122,27 @@ _(optional)_
 |`html`|`text/html`|
 |`xml`|`application/xml`|
 |`plain`|`text/plain`|
+
+### Include Arbitrary Headers
+- `-H` or `--header` may be specified multiple times to include headers with the request.
+- Example:
+  - `hopp-cli get -H 'X-Api-Key: foobar' -H 'X-Api-Secret: super_secret' https://example.com/api/v1/accounts`
+
+### Providing a Request Body via stdin
+
+In addition to `-b`/`--body`, you may provide a request body via stdin.
+If you combine this method with the `-b` flag, the body provided with `-b` will be ignored.
+
+**Example with Pipes**
+```shell
+$ echo '{"foo":"bar"}' | hopp-cli post -c js http://example.com
+```
+**Example with Redirection**
+```shell
+$ cat myrequest.json
+{
+  "foo": "bar"
+}
+
+$ hopp-cli post -c js http://example.com <myrequest.json
+```
