@@ -51,6 +51,16 @@ hopp-cli-git  | https://aur.archlinux.org/packages/hopp-cli-git/  | Compiled fro
 
 Install by `brew install athul/tap/hopp-cli`
 
+### Windows
+
+You can download pre-built binaries from the [Releases](https://github.com/hoppscotch/hopp-cli/releases) page.
+
+Alternatively, you can install `hopp-cli` via [Scoop](https://scoop.sh/):
+
+```
+scoop install hopp-cli
+```
+
 ## Usages
 
 Putting Simply: **Just pass the URL to the request method**
