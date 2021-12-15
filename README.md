@@ -27,7 +27,7 @@ $ sudo make install
 
 ### From Binary
 
-- You can download prebuilt binaries from the [Releases](https://github.com/athul/pwcli/releases) page.
+- You can download prebuilt binaries from the [Releases](https://github.com/hoppscotch/hopp-cli/releases) page.
 - **Supported platforms**:
   - Linux (x64, x86)
   - Mac (x64)
