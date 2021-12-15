@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	mets "github.com/athul/pwcli/methods"
 	"github.com/fatih/color"
+	mets "github.com/hoppscotch/hopp-cli/methods"
 	"github.com/urfave/cli"
 )
 

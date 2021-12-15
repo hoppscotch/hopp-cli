@@ -17,7 +17,7 @@ func Getbasic(c *cli.Context) (string, error) {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return "", fmt.Errorf("Error creating request: %s", err.Error())
+		return "", fmt.Errorf("error creating request: %w", err)
 	}
 
 	if c.String("token") != "" {
@@ -38,7 +38,7 @@ func Getbasic(c *cli.Context) (string, error) {
 	client := getHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("Error sending request: %s", err.Error())
+		return "", fmt.Errorf("error sending request: %w", err)
 	}
 	defer resp.Body.Close()
 

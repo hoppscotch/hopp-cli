@@ -36,7 +36,7 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(body))
 	if err != nil {
-		return "", fmt.Errorf("Error creating request: %s", err.Error())
+		return "", fmt.Errorf("error creating request: %w", err)
 	}
 
 	req.Header.Set("Content-Type", Contenttypes[c.String("ctype")])
@@ -59,7 +59,7 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 	client := getHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("Error sending request: %s", err.Error())
+		return "", fmt.Errorf("error sending request: %w", err)
 	}
 	defer resp.Body.Close()
 

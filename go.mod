@@ -1,16 +1,20 @@
-module github.com/athul/pwcli
+module github.com/hoppscotch/hopp-cli
 
-go 1.13
+go 1.16
 
 require (
-	github.com/fatih/color v1.9.0
+	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
+	github.com/fatih/color v1.13.0
 	github.com/knadh/stuffbin v1.1.0
-	github.com/olekukonko/tablewriter v0.0.4
-	github.com/pkg/browser v0.0.0-20201112035734-206646e67786
-	github.com/stretchr/testify v1.4.0 // indirect
-	github.com/tidwall/pretty v1.0.2
-	github.com/urfave/cli v1.22.2
-	github.com/yosssi/gohtml v0.0.0-20190915184251-7ff6f235ecaf
-	go.uber.org/multierr v1.6.0
-	golang.org/x/net v0.0.0-20200202094626-16171245cfb2 // indirect
+	github.com/mattn/go-colorable v0.1.12 // indirect
+	github.com/mattn/go-runewidth v0.0.13 // indirect
+	github.com/olekukonko/tablewriter v0.0.5
+	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
+	github.com/tidwall/pretty v1.2.0
+	github.com/urfave/cli v1.22.5
+	github.com/yosssi/gohtml v0.0.0-20201013000340-ee4748c638f4
+	go.uber.org/atomic v1.9.0 // indirect
+	go.uber.org/multierr v1.7.0
+	golang.org/x/net v0.0.0-20211205041911-012df41ee64c // indirect
+	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
 )

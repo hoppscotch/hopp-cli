@@ -1,56 +1,41 @@
 BIN:=hopp.bin
+BINSTUFFED:=hopp-cli
 PREFIX?=/usr/local
 BINDIR?=$(PREFIX)/bin
 VERSION?=$(shell git tag | grep ^v | sort -V | tail -n 1)
 STATIC := ./templates/index.html ./templates/template.md:/template.md
 
-deps:
-	go get -u github.com/knadh/stuffbin/...
+all: deps build
 
-build: cli.go go.mod go.sum
-	@echo
-	@echo Building hopp-cli. This may take a minute or two.
-	@echo
-	go build -o ${BIN} -ldflags="-s -w -X 'main.buildVersion=${VERSION}'" *.go
-	stuffbin -a stuff -in ${BIN} -out ${BIN} ${STATIC}
-	@echo
-	@echo ...Done\!
+.PHONY: deps
+deps:
+	@printf '%s\n' 'Checking binary dependencies...'
+	@if [ ! -f "$(shell go env GOPATH)/bin/stuffbin" ]; then printf '%s\n' 'Installing stuffbin to GOPATH' && go install github.com/knadh/stuffbin/stuffbin@latest; fi
+
+.PHONY: build
+build:
+	@printf '%s\n' 'Building hopp-cli. This may take a minute or two.'
+	go build -o ${BIN} -ldflags="-s -w -X 'main.buildVersion=${VERSION}'"
+	$(shell go env GOPATH)/bin/stuffbin -a stuff -in ${BIN} -out ${BINSTUFFED} ${STATIC}
+	rm ${BIN}
 
 .PHONY: clean
 clean:
-	@echo
-	@echo Cleaning...
-	@echo
-	go clean
-	@echo
-	@echo ...Done\!
-
-.PHONY: update
-update:
-	@echo
-	@echo Updating from upstream repository...
-	@echo
-	git pull --rebase origin master
-	@echo
-	@echo ...Done\!
+	@printf '%s\n' 'Cleaning...'
+	@go clean
+	@if [ -f 'hopp-cli' ]; then rm hopp-cli; fi
+	@if [ -f 'hopp.bin' ]; then rm hopp.bin; fi
 
 .PHONY: install
 install:
-	@echo
-	@echo Installing hopp-cli...
-	@echo
+	@printf '%s\n' 'Installing hopp-cli...'
 	install -m755 hopp-cli $(BINDIR)
-	@echo
-	@echo ...Done\!
 
 .PHONY: uninstall
 uninstall:
-	@echo
-	@echo Uninstalling hopp-cli...
-	@echo
+	@printf '%s\n' 'Uninstalling hopp-cli...'
 	rm -f $(BINDIR)/hopp-cli
-	@echo
-	@echo ...Done\!
+
 .PHONY: pack-releases
 pack-releases:
 	$(foreach var,$(RELEASE_BUILDS),stuffbin -a stuff -in ${var} -out ${var} ${STATIC};)
