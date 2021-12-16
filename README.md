@@ -146,3 +146,25 @@ $ cat myrequest.json
 
 $ hopp-cli post -c js http://example.com <myrequest.json
 ```
+
+### Providing a Request Body via text-editor
+
+In addition to providing request body via `-b/ --body` flag and stdin,
+you can also use `-e / --editor` flag which opens default text-editor in your system.
+
+**Example:**
+
+```shell
+$ hopp-cli post https://reqres.in/api/users/2 -c js -e
+```
+
+It will preferrably open editor based on `$EDITOR` env.
+
+**For example:**
+In your environment variable if `EDITOR=code` it will open VSCode for request-body input. Else, it will use default editor value based on OS.
+
+| OS      | Default Editor |
+| ------- | -------------- |
+| Linux   | `nano`         |
+| macOS   | `nano`         |
+| Windows | `notepad`      |
