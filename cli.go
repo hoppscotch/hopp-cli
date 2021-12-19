@@ -173,5 +173,5 @@ func main() {
 		l.Println(color.HiRedString("\n%s", err.Error()))
 		os.Exit(1)
 	}
-	fmt.Println(out)
+	fmt.Fprintf(color.Output, out)
 }
