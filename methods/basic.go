@@ -3,11 +3,14 @@ package methods
 import (
 	"bytes"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
+	"os/exec"
+	"runtime"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
 
@@ -26,9 +29,60 @@ func BasicRequestWithBody(c *cli.Context, method string) (string, error) {
 		return "", fmt.Errorf("error getting file info for stdin fd: %w", err)
 	}
 	if (stat.Mode() & os.ModeCharDevice) == 0 {
-		body, err = io.ReadAll(os.Stdin)
+		body, err = ioutil.ReadAll(os.Stdin)
 		if err != nil {
 			return "", fmt.Errorf("error reading from stdin: %w", err)
+		}
+	} else if c.Bool("editor") {
+		var path string
+		var editor = os.Getenv("EDITOR")
+
+		if editor == "" {
+			// check OS
+			currentOs := runtime.GOOS
+
+			// based on OS find assign default editor
+			if currentOs == "linux" || currentOs == "darwin" {
+				editor = "nano"
+			} else if currentOs == "windows" {
+				editor = "notepad"
+			}
+		}
+
+		path, err = exec.LookPath(editor)
+		if err != nil {
+			return "", fmt.Errorf("Unable to locate %s: %w", editor, err)
+		}
+
+		// create temp file for writing request body
+		tempFile, err := ioutil.TempFile("", "HOPP-CLI-REQUEST*.txt")
+		if err != nil {
+			return "", fmt.Errorf("Unable to create temp file: %w", err)
+		}
+
+		tempFileName := string(tempFile.Name())
+		defer os.Remove(tempFileName)
+		tempFile.Close()
+
+		// open temp file in selected editor and wait until closed
+		cmd := exec.Command(path, tempFileName)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+
+		if err := cmd.Start(); err != nil {
+			return "", fmt.Errorf("Unable to open editor: %w", err)
+		}
+
+		color.Yellow("Waiting for file to close..\n\n")
+
+		if err := cmd.Wait(); err != nil {
+			return "", fmt.Errorf("Error waiting for file: %w", err)
+		}
+
+		// read temp file contents
+		body, err = ioutil.ReadFile(tempFileName)
+		if err != nil {
+			return "", fmt.Errorf("Error reading file %s: %w", tempFileName, err)
 		}
 	} else {
 		body = []byte(c.String("body"))

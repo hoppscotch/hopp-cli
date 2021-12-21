@@ -72,6 +72,10 @@ func main() {
 			Name:  "body, b",
 			Usage: "Body of the Post Request",
 		},
+		cli.BoolFlag{
+			Name:  "editor, e",
+			Usage: "Open editor to insert request body",
+		},
 		cli.StringSliceFlag{
 			Name:  "header, H",
 			Usage: "Header to pass with the request. Can be used multiple times.",
@@ -169,5 +173,5 @@ func main() {
 		l.Println(color.HiRedString("\n%s", err.Error()))
 		os.Exit(1)
 	}
-	fmt.Println(out)
+	fmt.Fprintf(color.Output, out)
 }
