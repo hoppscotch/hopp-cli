@@ -54,12 +54,12 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
-# brews:
-#   - name: hopp-cli
-#     github:
-#       owner: athul
-#       name: homebrew-tap
-#     folder: Formula
-#     homepage: "https://github.com/hoppscotch/hopp-cli"
-#     description: "CLI for Hoppscotch.io"
-#     install: bin.install "hopp-cli"
+brews:
+  - name: hopp-cli
+    github:
+      owner: athul
+      name: homebrew-tap
+    folder: Formula
+    homepage: "https://github.com/hoppscotch/hopp-cli"
+    description: "CLI for Hoppscotch.io"
+    install: bin.install "hopp-cli"
