@@ -57,9 +57,9 @@ changelog:
 brews:
   - name: hopp-cli
     github:
-      owner: athul
+      owner: hoppscotch
       name: homebrew-tap
-    folder: Formula
+    token: "{{ .Env.GH_TOKEN }}"
     homepage: "https://github.com/hoppscotch/hopp-cli"
     description: "CLI for Hoppscotch.io"
-    install: bin.install "hopp-cli"
+        
