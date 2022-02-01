@@ -38,4 +38,4 @@ uninstall:
 
 .PHONY: pack-releases
 pack-releases:
-	$(foreach var,$(RELEASE_BUILDS),stuffbin -a stuff -in ${var} -out ${var} ${STATIC};)
+	$(foreach var,$(RELEASE_BUILDS),stuffbin -a stuff -in ${var} -out ./${var} ${STATIC};)

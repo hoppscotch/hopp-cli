@@ -1,5 +1,16 @@
+project_name: hopp-cli
+release:
+  github:
+    owner: hoppscotch
+    name: hopp-cli
+  prerelease: auto
+  draft: false
+  name_template: "hopp-cli {{.Version}}"
+before:
+  hooks:
+    - go mod tidy
 env:
-  - RELEASE_BUILDS=dist/hopp-cli_darwin_amd64/hopp-cli dist/hopp-cli_linux_386/hopp-cli dist/hopp-cli_linux_amd64/hopp-cli dist/hopp-cli_windows_386/hopp-cli.exe dist/hopp-cli_windows_amd64/hopp-cli.exe
+  - RELEASE_BUILDS=dist/hopp-cli_darwin_amd64/hopp-cli dist/hopp-cli_darwin_arm64/hopp-cli dist/hopp-cli_linux_386/hopp-cli dist/hopp-cli_linux_amd64/hopp-cli dist/hopp-cli_windows_386/hopp-cli.exe dist/hopp-cli_windows_amd64/hopp-cli.exe
 builds:
   - env:
       - CGO_ENABLED=0
@@ -12,6 +23,16 @@ builds:
     goarch:
       - 386
       - amd64
+      - arm64
+    targets:
+      - linux_amd64
+      - linux_arm64
+      - linux_386
+      - windows_amd64
+      - windows_arm64
+      - windows_386
+      - darwin_amd64
+      - darwin_arm64
     hooks:
       post: make pack-releases
     ignore:
@@ -19,29 +40,26 @@ builds:
         goarch: 386
 archives:
   - replacements:
-      darwin: Darwin
-      linux: Linux
+      darwin: macOS
+      386: i386
+      linux: linux
       amd64: x86_64
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 snapshot:
-  name_template: '{{ .Tag }}'
+  name_template: "{{ .Tag }}"
 changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
-release:
-  github:
-    owner: hoppscotch
-    name: hopp-cli
+      - "^docs:"
+      - "^test:"
 brews:
   - name: hopp-cli
     github:
       owner: athul
       name: homebrew-tap
     folder: Formula
-    homepage: 'https://github.com/hoppscotch/hopp-cli'
-    description: 'CLI for Hoppscotch.io'
+    homepage: "https://github.com/hoppscotch/hopp-cli"
+    description: "CLI for Hoppscotch.io"
     install: bin.install "hopp-cli"
