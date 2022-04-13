@@ -115,7 +115,7 @@ $ hopp-cli gen <PATH to hoppscotch-collection.json>
 
 Sample Hosted site: https://hopp-docsify.surge.sh/
 
-Powered by [Doscify](https://docsify.js.org)
+Powered by [docsify](https://docsify.js.org)
 
 Flags:
 
