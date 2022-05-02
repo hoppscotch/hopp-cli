@@ -11,7 +11,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/tidwall/pretty v1.2.0
-	github.com/urfave/cli v1.22.5
+	github.com/urfave/cli v1.22.8
 	github.com/yosssi/gohtml v0.0.0-20201013000340-ee4748c638f4
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0
