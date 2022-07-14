@@ -1,3 +1,9 @@
+⚠️⚠️⚠️⚠️⚠️⚠️
+
+**This project is now archived. If you want to use Hoppscotch as a CLI client for CI/CD purposes, please use the new [Hoppscotch CLI](https://docs.hoppscotch.io/cli).**
+
+⚠️⚠️⚠️⚠️⚠️⚠️
+
 # Hoppscotch CLI [![hoppscotch](https://img.shields.io/badge/Made_for-Hoppscotch-hex_color_code?logo=Postwoman)](https://hoppscotch.io) [![Go Report Card](https://goreportcard.com/badge/github.com/athul/pwcli)](https://goreportcard.com/report/github.com/athul/pwcli)
 
 Send HTTP requests from terminal and Generate API Docs. An alternative to cURL, httpie ⚡️
