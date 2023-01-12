@@ -10,12 +10,6 @@ Send HTTP requests from terminal and Generate API Docs. An alternative to cURL, 
 
 ## Installation
 
-### From Script
-
-```bash
-$ sh -c "$(curl -sL https://git.io/getpwcli)"
-```
-
 ### From Source
 
 - Clone the repo
